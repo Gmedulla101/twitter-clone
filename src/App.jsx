@@ -1,4 +1,10 @@
+import Header from "./components/Header/Header";
+
 const App = () => {
-  return(<h2> It is well </h2>)
+  return (
+    <>
+      <Header />
+    </>
+  )
 }
 export default App;
