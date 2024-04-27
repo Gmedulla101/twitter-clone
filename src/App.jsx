@@ -1,4 +1,6 @@
+import SignUp from './components/SignUp';
+
 const App = () => {
-  return <h2 className="border-4 border-slate-500"> New app </h2>;
+  return <SignUp />;
 };
 export default App;
