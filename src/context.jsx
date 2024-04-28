@@ -2,8 +2,8 @@ import { useState, useEffect, createContext, useContext } from 'react';
 
 const GlobalContext = createContext();
 
-const useGlobalContext = () => {
-  const { user, setUser } = useContext(GlobalContext);
+ export const useGlobalContext = () => {
+  const { user, setUser} = useContext(GlobalContext);
   return [user, setUser];
 };
 

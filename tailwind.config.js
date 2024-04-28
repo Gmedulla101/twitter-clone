@@ -9,6 +9,9 @@ export default {
       screens: {
         sssm: '400px',
       },
+      height: {
+        unfull: '90%'
+      }
     },
   },
   plugins: [],

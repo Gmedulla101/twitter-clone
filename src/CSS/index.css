@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* .signInBar {
+    border: 2px solid red;
+    position: absolute;
+    top: 90%;
+    width: 100%;
+} */
