@@ -1,10 +1,6 @@
-import Header from "./components/Header/Header";
+import SignUp from './components/SignUp';
 
 const App = () => {
-  return (
-    <>
-      <Header />
-    </>
-  )
-}
+  return <SignUp />;
+};
 export default App;
