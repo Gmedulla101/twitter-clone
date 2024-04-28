@@ -8,3 +8,7 @@
     top: 90%;
     width: 100%;
 } */
+
+.main-content-textarea::-webkit-scrollbar {
+  display: none;
+}

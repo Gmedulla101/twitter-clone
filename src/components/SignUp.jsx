@@ -13,10 +13,16 @@ import { signInWithPopup } from 'firebase/auth';
 //IMPORTING ROUTER DEPENDENCIES
 import { Link } from 'react-router-dom';
 
+//IMPORTING CUSTOM HOOKS
+import { useGlobalContext } from '../context';
+
 const SignUp = () => {
+  const [user, setUser, isSignedIn, setIsSignedIn] = useGlobalContext();
+
   const signInWithGoogle = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
+      const { email, photoURL, displayName, uid } = auth.currentUser;
     } catch (error) {
       console.error(error);
     }
@@ -25,16 +31,11 @@ const SignUp = () => {
   return (
     <>
       <div className="p-10 lg:flex justify-between items-center xl:px-20 2xl:px-40">
-
-        <img src={logo} alt="X logo" className='lg:w-72'/>
+        <img src={logo} alt="X logo" className="w-10 lg:w-72" />
 
         <div>
-          <h2 className="font-bold text-6xl my-12"> 
-            Happening now 
-          </h2>
-          <h4 className="font-bold text-3xl"> 
-          Join today. 
-          </h4>
+          <h2 className="font-bold text-6xl my-12">Happening now</h2>
+          <h4 className="font-bold text-3xl">Join today.</h4>
 
           <button
             onClick={signInWithGoogle}
@@ -50,10 +51,11 @@ const SignUp = () => {
           </button>
           <p className="text-center"> or </p>
 
-          <Link to={'/create-account'}> 
-          <button className="px-16 py-3 bg-blue-500 text-white rounded-3xl flex mx-auto mt-5 w-ssm justify-center font-bold hover:bg-blue-600 active:bg-blue-700 lg:w-10/12">
-            Create an account{' '}
-          </button> </Link>
+          <Link to={'/create-account'}>
+            <button className="px-16 py-3 bg-blue-500 text-white rounded-3xl flex mx-auto mt-5 w-ssm justify-center font-bold hover:bg-blue-600 active:bg-blue-700 lg:w-10/12">
+              Create an account{' '}
+            </button>{' '}
+          </Link>
 
           <h4 className="my-10 font-bold"> Already have an account? </h4>
           <button className="flex justify-around mx-auto px-16 py-2 w-ssm mt-3 mb-5 border-slate-300 border-2 rounded-3xl text-blue-500 font-bold hover:bg-slate-200 active:bg-slate-300 lg:w-10/12">
