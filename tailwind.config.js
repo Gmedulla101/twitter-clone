@@ -11,6 +11,9 @@ export default {
       },
       height: {
         unfull: '90%'
+      },
+      boxShadow: {
+        '3xl': '0 0 15px 8px lightgray'
       }
     },
   },

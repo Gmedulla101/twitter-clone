@@ -26,7 +26,7 @@ const SignUp = () => {
     <>
       <div className="p-10 lg:flex justify-between items-center xl:px-20 2xl:px-40">
 
-       <Logo   logo={logo}  />
+        <img src={logo} alt="X logo" className='lg:w-72'/>
 
         <div>
           <h2 className="font-bold text-6xl my-12"> 
