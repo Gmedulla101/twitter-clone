@@ -77,10 +77,13 @@ const SignUp = () => {
           </Link>
 
           <h4 className="my-10 font-bold"> Already have an account? </h4>
-          <button className="flex justify-around mx-auto px-16 py-2 w-ssm mt-3 mb-5 border-slate-300 border-2 rounded-3xl text-blue-500 font-bold hover:bg-slate-200 active:bg-slate-300 lg:w-10/12">
+          <Link to={'/sign-in'}>
             {' '}
-            Sign in{' '}
-          </button>
+            <button className="flex justify-around mx-auto px-16 py-2 w-ssm mt-3 mb-5 border-slate-300 border-2 rounded-3xl text-blue-500 font-bold hover:bg-slate-200 active:bg-slate-300 lg:w-10/12">
+              {' '}
+              Sign in{' '}
+            </button>{' '}
+          </Link>
         </div>
       </div>
     </>
