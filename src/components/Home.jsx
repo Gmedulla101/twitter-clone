@@ -23,7 +23,7 @@ import { db } from '../config/firebase';
 
 /* COMPONENT START */
 const Home = () => {
-  const [isSignedIn, setIsSignedIn] = useGlobalContext();
+  const [isSignedIn, setIsSignedIn, user] = useGlobalContext();
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [tweets, setTweets] = useState(null);
@@ -70,6 +70,7 @@ const Home = () => {
       console.error(error);
     }
   };
+  console.log(user);
 
   /* COMPONENT BODY */
   return (
@@ -106,12 +107,13 @@ const Home = () => {
         </div>
       </aside>
 
+      {/* MAIN BODY SECTION */}
       <div className="main-scroll ml-20 border-2 border-slate-200">
         <h1 className="text-2xl font-bold px-2 py-2"> Home </h1>
 
         <div className="py-3 border-2 border-slate-200">
           <textarea
-            placeholder="What's happenning..."
+            placeholder={`What's happening!!! ${user[0]?.username}`}
             name="post"
             value={textareaContent}
             onChange={textChange}

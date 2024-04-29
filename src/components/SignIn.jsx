@@ -5,6 +5,11 @@ import { useGlobalContext } from '../context';
 //IMPORTING AUTHENTICATION DEPENDENCIES
 import { auth } from '../config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { db } from '../config/firebase';
+
+//IMPORTING FIREBASE FIRESTORE DEPENDENCIES
+import { doc, getDocs, collection } from 'firebase/firestore';
+const userCollectionRef = collection(db, 'users');
 
 //IMPORTING RELEVANT COMPONENTS
 import Logo from './Logo';
@@ -17,7 +22,7 @@ const CreateAccount = () => {
   });
 
   //UTILISING GLOBAL CONTEXT CUSTOM HOOK
-  const [isSignedIn, setIsSignedIn] = useGlobalContext();
+  const [isSignedIn, setIsSignedIn, user, setUser] = useGlobalContext();
 
   //UTILISIING USENAVIGATE HOOK
   const navigate = useNavigate();
@@ -41,8 +46,16 @@ const CreateAccount = () => {
         signInData.password
       );
 
+      const data = await getDocs(userCollectionRef);
+      const cleanData = data.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      });
+      const userData = cleanData.filter((data) => {
+        return data.email === signInData.email;
+      });
+      setUser(userData);
       setIsSignedIn(true);
-      console.log('Submitted!');
+      console.log(userData);
     } catch (error) {
       if (error.code === 'auth/invalid-credential') {
         setErrorMessage('Invalid log in credentials');
