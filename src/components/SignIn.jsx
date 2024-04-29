@@ -53,7 +53,8 @@ const CreateAccount = () => {
       const userData = cleanData.filter((data) => {
         return data.email === signInData.email;
       });
-      setUser(userData);
+      const user = userData[0];
+      setUser(user);
       setIsSignedIn(true);
     } catch (error) {
       if (error.code === 'auth/invalid-credential') {

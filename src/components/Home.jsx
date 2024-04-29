@@ -60,7 +60,7 @@ const Home = () => {
   const tweetsEl = tweets?.map((tweet) => {
     return <Tweet poster={tweet.poster} post={tweet.post} key={tweet.id} />;
   });
-  const userTweetsEl = userTweets[0]?.userTweets?.map((userTweet) => {
+  const userTweetsEl = userTweets?.[0]?.userTweets?.map((userTweet) => {
     return (
       <Tweet
         poster={userTweet?.poster}
@@ -81,19 +81,19 @@ const Home = () => {
     try {
       await addDoc(tweetCollectionRef, {
         post: textareaContent,
-        poster: user[0]?.username ? user[0]?.username : 'Anonymous',
+        poster: user?.username ? user?.username : 'Anonymous',
       });
       getTweets();
       setTextAreaContent('');
-
+      /* 
       if (user) {
         const newUserTweetArray = [
-          ...user[0].userTweets,
-          { post: textareaContent, poster: user[0].username },
+          ...user.userTweets,
+          { post: textareaContent, poster: user.username },
         ];
-        const userTweetDoc = doc(db, 'users', user[0].id);
+        const userTweetDoc = doc(db, 'users', user.id);
         await updateDoc(userTweetDoc, { userTweets: newUserTweetArray });
-      }
+      } */
 
       console.log('Submitted');
     } catch (error) {
@@ -109,7 +109,7 @@ const Home = () => {
           return { ...doc.data(), id: doc.id };
         });
         const userInfo = cleanData.filter((data) => {
-          return data.username === user[0]?.username;
+          return data.username === user?.username;
         });
         setUserTweets(userInfo);
       } catch (error) {
@@ -119,8 +119,6 @@ const Home = () => {
 
     getUserTweets();
   }, []);
-
-  console.log(userTweets[0].userTweets);
 
   //FUNCTIONALITY FOR HOME PAGE STATE
   const [homeState, setHomeState] = useState(true);
@@ -174,8 +172,8 @@ const Home = () => {
         <div className="py-3 border-2 border-slate-200">
           <textarea
             placeholder={
-              user[0]?.username
-                ? `Whats happening ${user[0]?.username}!!!`
+              user?.username
+                ? `Whats happening ${user?.username}!!!`
                 : "What's happening people!!!"
             }
             name="post"

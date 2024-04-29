@@ -10,19 +10,38 @@ import appleLogo from '../images/apple-logo.png';
 import { auth, googleProvider } from '../config/firebase';
 import { signInWithPopup } from 'firebase/auth';
 
+//IMPORTING FIREBASE FIRESTORE DEPENDENCIES
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '../config/firebase';
+
 //IMPORTING ROUTER DEPENDENCIES
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 //IMPORTING CUSTOM HOOKS
 import { useGlobalContext } from '../context';
 
+const userCollectionRef = collection(db, 'users');
+
 const SignUp = () => {
+  const navigate = useNavigate();
   const [user, setUser, isSignedIn, setIsSignedIn] = useGlobalContext();
 
   const signInWithGoogle = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
       const { email, photoURL, displayName, uid } = auth.currentUser;
+
+      await addDoc(userCollectionRef, {
+        email: email,
+        username: displayName,
+        userTweets: [],
+      });
+      setUser({
+        email: email,
+        username: displayName,
+        userTweets: [],
+      });
+      navigate('/');
     } catch (error) {
       console.error(error);
     }
