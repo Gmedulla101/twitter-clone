@@ -18,7 +18,13 @@ import { useGlobalContext } from '../context';
 import { Link } from 'react-router-dom';
 
 //IMPORTING FIREBASE DEPENDENCIES
-import { getDocs, addDoc, collection } from 'firebase/firestore';
+import {
+  getDocs,
+  addDoc,
+  collection,
+  updateDoc,
+  doc,
+} from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 /* COMPONENT START */
@@ -27,9 +33,12 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [tweets, setTweets] = useState(null);
+  const [userTweets, setUserTweets] = useState(null);
 
   const tweetCollectionRef = collection(db, 'tweets');
+  const userTweetCollectionRef = collection(db, 'users');
 
+  //FUNCTIONALTY FOR GETTING THE DEFAULT TWEETS FROM THE BACKEND
   const getTweets = async () => {
     try {
       const tweetsData = await getDocs(tweetCollectionRef);
@@ -51,6 +60,15 @@ const Home = () => {
   const tweetsEl = tweets?.map((tweet) => {
     return <Tweet poster={tweet.poster} post={tweet.post} key={tweet.id} />;
   });
+  const userTweetsEl = userTweets[0]?.userTweets?.map((userTweet) => {
+    return (
+      <Tweet
+        poster={userTweet?.poster}
+        post={userTweet?.post}
+        key={userTweets?.id}
+      />
+    );
+  });
 
   //ONCHANGE HANDLER FOR POST TEXT AREA
   const [textareaContent, setTextAreaContent] = useState('');
@@ -58,19 +76,61 @@ const Home = () => {
     setTextAreaContent(e.target.value);
   };
 
+  //CREATE POST FUNCTIONALITY
   const createPost = async () => {
     try {
       await addDoc(tweetCollectionRef, {
         post: textareaContent,
-        poster: 'Still the man',
+        poster: user[0]?.username ? user[0]?.username : 'Anonymous',
       });
       getTweets();
       setTextAreaContent('');
+
+      if (user) {
+        const newUserTweetArray = [
+          ...user[0].userTweets,
+          { post: textareaContent, poster: user[0].username },
+        ];
+        const userTweetDoc = doc(db, 'users', user[0].id);
+        await updateDoc(userTweetDoc, { userTweets: newUserTweetArray });
+      }
+
+      console.log('Submitted');
     } catch (error) {
       console.error(error);
     }
   };
-  console.log(user);
+
+  useEffect(() => {
+    const getUserTweets = async () => {
+      try {
+        const userTweetsData = await getDocs(userTweetCollectionRef);
+        const cleanData = userTweetsData.docs.map((doc) => {
+          return { ...doc.data(), id: doc.id };
+        });
+        const userInfo = cleanData.filter((data) => {
+          return data.username === user[0]?.username;
+        });
+        setUserTweets(userInfo);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getUserTweets();
+  }, []);
+
+  console.log(userTweets[0].userTweets);
+
+  //FUNCTIONALITY FOR HOME PAGE STATE
+  const [homeState, setHomeState] = useState(true);
+
+  const toggleToTweets = () => {
+    setHomeState(true);
+  };
+  const toggleToMyTweets = () => {
+    setHomeState(false);
+  };
 
   /* COMPONENT BODY */
   return (
@@ -113,7 +173,11 @@ const Home = () => {
 
         <div className="py-3 border-2 border-slate-200">
           <textarea
-            placeholder={`What's happening!!! ${user[0]?.username}`}
+            placeholder={
+              user[0]?.username
+                ? `Whats happening ${user[0]?.username}!!!`
+                : "What's happening people!!!"
+            }
             name="post"
             value={textareaContent}
             onChange={textChange}
@@ -127,16 +191,55 @@ const Home = () => {
           </button>
         </div>
 
-        <section className="tweets mt-7">
-          {isLoading ? (
-            <h2 className="text-center font-bold text-xl my-10">
-              {' '}
-              Loading...{' '}
-            </h2>
-          ) : (
-            tweetsEl
-          )}
-        </section>
+        <div className="home-page-toggle flex justify-around">
+          <button
+            onClick={toggleToTweets}
+            className="text-blue-500 font-bold text-lg hover:underline"
+            style={
+              homeState
+                ? { textDecoration: 'underline' }
+                : { textDecoration: 'none' }
+            }
+          >
+            Tweets
+          </button>
+
+          <button
+            onClick={toggleToMyTweets}
+            className="text-blue-500 font-bold text-lg hover:underline"
+            style={
+              !homeState
+                ? { textDecoration: 'underline' }
+                : { textDecoration: 'none' }
+            }
+          >
+            {' '}
+            My tweets{' '}
+          </button>
+        </div>
+        {homeState ? (
+          <section className="tweets mt-7">
+            {isLoading ? (
+              <h2 className="text-center font-bold text-xl my-10">
+                {' '}
+                Loading...{' '}
+              </h2>
+            ) : (
+              tweetsEl
+            )}
+          </section>
+        ) : (
+          <section>
+            {isLoading ? (
+              <h2 className="text-center font-bold text-xl my-10">
+                {' '}
+                Loading...{' '}
+              </h2>
+            ) : (
+              userTweetsEl
+            )}
+          </section>
+        )}
       </div>
 
       {/* CONDITIONAL SIGN IN BAR */}

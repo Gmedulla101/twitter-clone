@@ -55,7 +55,6 @@ const CreateAccount = () => {
       });
       setUser(userData);
       setIsSignedIn(true);
-      console.log(userData);
     } catch (error) {
       if (error.code === 'auth/invalid-credential') {
         setErrorMessage('Invalid log in credentials');
