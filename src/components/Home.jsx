@@ -57,6 +57,7 @@ const Home = () => {
     getTweets();
   }, []);
 
+  //SETTING THE TWEETS TO BE DISPLAYED
   const tweetsEl = tweets?.map((tweet) => {
     return <Tweet poster={tweet.poster} post={tweet.post} key={tweet.id} />;
   });
@@ -65,10 +66,12 @@ const Home = () => {
       <Tweet
         poster={userTweet?.poster}
         post={userTweet?.post}
-        key={userTweets?.id}
+        key={userTweet?.id}
       />
     );
   });
+
+  console.log(userTweets);
 
   //ONCHANGE HANDLER FOR POST TEXT AREA
   const [textareaContent, setTextAreaContent] = useState('');
@@ -85,7 +88,7 @@ const Home = () => {
       });
       getTweets();
       setTextAreaContent('');
-      /* 
+
       if (user) {
         const newUserTweetArray = [
           ...user.userTweets,
@@ -93,30 +96,30 @@ const Home = () => {
         ];
         const userTweetDoc = doc(db, 'users', user.id);
         await updateDoc(userTweetDoc, { userTweets: newUserTweetArray });
-      } */
+        getUserTweets();
+      }
 
       console.log('Submitted');
     } catch (error) {
       console.error(error);
     }
   };
+  const getUserTweets = async () => {
+    try {
+      const userTweetsData = await getDocs(userTweetCollectionRef);
+      const cleanData = userTweetsData.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      });
+      const userInfo = cleanData.filter((data) => {
+        return data.username === user?.username;
+      });
+      setUserTweets(userInfo);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    const getUserTweets = async () => {
-      try {
-        const userTweetsData = await getDocs(userTweetCollectionRef);
-        const cleanData = userTweetsData.docs.map((doc) => {
-          return { ...doc.data(), id: doc.id };
-        });
-        const userInfo = cleanData.filter((data) => {
-          return data.username === user?.username;
-        });
-        setUserTweets(userInfo);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     getUserTweets();
   }, []);
 

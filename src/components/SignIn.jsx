@@ -67,7 +67,7 @@ const CreateAccount = () => {
   };
 
   return (
-    <div className="w-[90%] mx-auto my-9 rounded-lg sm:shadow-3xl sm:pt-2 sm:pb-4 lg:w-[80%] lg:py-9">
+    <div className="w-[90%] p-6 mx-auto my-9 rounded-lg sm:shadow-3xl sm:pt-2 sm:pb-4 lg:w-[80%] lg:py-9">
       <Logo logo={logo} />
       <div className=" flex flex-col w-10/12 mx-auto py-3 items-center">
         <h1 className="font-bold text-2xl mb-7">
