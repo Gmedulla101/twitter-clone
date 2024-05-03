@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from 'react';
+
+//IMPORTING ROUTING DEPENDENCIES
+import { useNavigate, Link } from 'react-router-dom';
 //IMPORTING RELEVANT COMPONENTS
 import Tweet from './Tweet';
-
-//IMPORTING ASSETS
-import Logo from './Logo';
-import logo from '../images/twitter.png';
-import homeBtn from '../images/home.png';
-import searchBtn from '../images/search.png';
-import notiBtn from '../images/bell.png';
-import profileBtn from '../images/user.png';
-import newTweetBtn from '../images/feather.png';
+import SideBar from './SideBar';
 
 //IMPORTING CUSTOM HOOKS
 import { useGlobalContext } from '../context';
-
-//IMPORTING ROUTING DEPENDENCIES
-import { Link } from 'react-router-dom';
 
 //IMPORTING FIREBASE DEPENDENCIES
 import {
@@ -25,7 +17,8 @@ import {
   updateDoc,
   doc,
 } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { auth, db } from '../config/firebase';
+import { data } from 'autoprefixer';
 
 /* COMPONENT START */
 const Home = () => {
@@ -34,9 +27,11 @@ const Home = () => {
   const [isError, setIsError] = useState(false);
   const [tweets, setTweets] = useState(null);
   const [userTweets, setUserTweets] = useState(null);
+  const [postError, setPostError] = useState(isSignedIn);
 
   const tweetCollectionRef = collection(db, 'tweets');
   const userTweetCollectionRef = collection(db, 'users');
+  const navigate = useNavigate();
 
   //FUNCTIONALTY FOR GETTING THE DEFAULT TWEETS FROM THE BACKEND
   const getTweets = async () => {
@@ -53,8 +48,24 @@ const Home = () => {
     }
   };
 
+  const getUserTweets = async () => {
+    try {
+      const userTweetsData = await getDocs(userTweetCollectionRef);
+      const cleanData = userTweetsData.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      });
+      const userInfo = cleanData.filter((data) => {
+        return data.username === user?.username;
+      });
+      setUserTweets(userInfo);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     getTweets();
+    getUserTweets();
   }, []);
 
   //SETTING THE TWEETS TO BE DISPLAYED
@@ -71,8 +82,6 @@ const Home = () => {
     );
   });
 
-  console.log(userTweets);
-
   //ONCHANGE HANDLER FOR POST TEXT AREA
   const [textareaContent, setTextAreaContent] = useState('');
   const textChange = (e) => {
@@ -81,6 +90,20 @@ const Home = () => {
 
   //CREATE POST FUNCTIONALITY
   const createPost = async () => {
+    if (!user) {
+      setPostError(true);
+      return;
+    } else {
+      setPostError(false);
+    }
+    if (textareaContent === '') {
+      alert('Post field is empty, please type in a post');
+      return;
+    }
+    if (!auth.currentUser) {
+      setPostError(true);
+      return;
+    }
     try {
       await addDoc(tweetCollectionRef, {
         post: textareaContent,
@@ -101,27 +124,13 @@ const Home = () => {
 
       console.log('Submitted');
     } catch (error) {
+      /*  if (error.code === 'permission-denied') {
+        setPostError(true);
+       setTimeout(navigate('/sign-up'), 10000);
+      } */
       console.error(error);
     }
   };
-  const getUserTweets = async () => {
-    try {
-      const userTweetsData = await getDocs(userTweetCollectionRef);
-      const cleanData = userTweetsData.docs.map((doc) => {
-        return { ...doc.data(), id: doc.id };
-      });
-      const userInfo = cleanData.filter((data) => {
-        return data.username === user?.username;
-      });
-      setUserTweets(userInfo);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    getUserTweets();
-  }, []);
 
   //FUNCTIONALITY FOR HOME PAGE STATE
   const [homeState, setHomeState] = useState(true);
@@ -137,36 +146,7 @@ const Home = () => {
   return (
     <>
       {/* SIDE BAR */}
-      <aside className="border-2 border-slate-200 w-20 h-full fixed flex flex-col items-center">
-        <Logo logo={logo} />
-        <div className="flex flex-col gap-12 items-center">
-          <img
-            src={homeBtn}
-            alt=""
-            className="w-12 cursor-pointer p-2 rounded-full hover:bg-blue-500"
-          />
-          <img
-            src={searchBtn}
-            alt=""
-            className="w-12 cursor-pointer p-1 rounded-full hover:bg-blue-500"
-          />
-          <img
-            src={notiBtn}
-            alt=""
-            className="w-12 cursor-pointer p-2 rounded-full hover:bg-blue-500"
-          />
-          <img
-            src={profileBtn}
-            alt=""
-            className="w-12 cursor-pointer p-2 rounded-full hover:bg-blue-500"
-          />
-          <img
-            src={newTweetBtn}
-            alt=""
-            className="w-14 cursor-pointer p-2 rounded-full bg-blue-500 "
-          />
-        </div>
-      </aside>
+      <SideBar />
 
       {/* MAIN BODY SECTION */}
       <div className="main-scroll ml-20 border-2 border-slate-200">
@@ -190,6 +170,13 @@ const Home = () => {
           >
             Post
           </button>
+        </div>
+
+        <div>
+          <p className="p-2 font-bold text-center text-red-500">
+            {' '}
+            {postError ? 'Post cannot be made without signing in' : ''}{' '}
+          </p>
         </div>
 
         <div className="home-page-toggle flex justify-around">
@@ -236,8 +223,13 @@ const Home = () => {
                 {' '}
                 Loading...{' '}
               </h2>
-            ) : (
+            ) : userTweetsEl ? (
               userTweetsEl
+            ) : (
+              <p className="font-bold text-2xl text-center mt-20">
+                {' '}
+                No tweets to show right now{' '}
+              </p>
             )}
           </section>
         )}
