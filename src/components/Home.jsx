@@ -72,15 +72,17 @@ const Home = () => {
   const tweetsEl = tweets?.map((tweet) => {
     return <Tweet poster={tweet.poster} post={tweet.post} key={tweet.id} />;
   });
-  const userTweetsEl = userTweets?.[0]?.userTweets?.map((userTweet) => {
+  const userTweetsEl = userTweets?.[0]?.userTweets?.map((userTweet, i) => {
     return (
       <Tweet
         poster={userTweet?.poster}
         post={userTweet?.post}
-        key={userTweet?.id}
+        key={userTweet[i]}
       />
     );
   });
+
+  console.log(userTweets);
 
   //ONCHANGE HANDLER FOR POST TEXT AREA
   const [textareaContent, setTextAreaContent] = useState('');
