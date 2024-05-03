@@ -27,7 +27,7 @@ const Home = () => {
   const [isError, setIsError] = useState(false);
   const [tweets, setTweets] = useState(null);
   const [userTweets, setUserTweets] = useState(null);
-  const [postError, setPostError] = useState(isSignedIn);
+  const [postError, setPostError] = useState(!isSignedIn);
 
   const tweetCollectionRef = collection(db, 'tweets');
   const userTweetCollectionRef = collection(db, 'users');
@@ -48,6 +48,7 @@ const Home = () => {
     }
   };
 
+  //FUNCTIONALTY FOR GETTING THE USER TWEETS FROM THE BACKEND
   const getUserTweets = async () => {
     try {
       const userTweetsData = await getDocs(userTweetCollectionRef);
@@ -68,7 +69,7 @@ const Home = () => {
     getUserTweets();
   }, []);
 
-  //SETTING THE TWEETS TO BE DISPLAYED
+  //SETTING THE TWEETS (USER AND DEFAULT) TO BE DISPLAYED
   const tweetsEl = tweets?.map((tweet) => {
     return <Tweet poster={tweet.poster} post={tweet.post} key={tweet.id} />;
   });
@@ -90,6 +91,7 @@ const Home = () => {
 
   //CREATE POST FUNCTIONALITY
   const createPost = async () => {
+    //TACKLING EDGE CASES AND PROGRAMMATIC INCONSISTENCIES
     if (!user) {
       setPostError(true);
       return;
@@ -104,6 +106,8 @@ const Home = () => {
       setPostError(true);
       return;
     }
+
+    //MAIN FUNCTIONALITY
     try {
       await addDoc(tweetCollectionRef, {
         post: textareaContent,
@@ -124,10 +128,6 @@ const Home = () => {
 
       console.log('Submitted');
     } catch (error) {
-      /*  if (error.code === 'permission-denied') {
-        setPostError(true);
-       setTimeout(navigate('/sign-up'), 10000);
-      } */
       console.error(error);
     }
   };
