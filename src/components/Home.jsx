@@ -82,8 +82,6 @@ const Home = () => {
     );
   });
 
-  console.log(userTweets);
-
   //ONCHANGE HANDLER FOR POST TEXT AREA
   const [textareaContent, setTextAreaContent] = useState('');
   const textChange = (e) => {
