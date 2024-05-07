@@ -19,7 +19,7 @@ export default function SideBar() {
   const [isSignedIn, setIsSignedIn, user] = useGlobalContext();
 
   return (
-    <aside className="border-2 border-slate-200 w-20 h-full fixed flex flex-col items-center">
+    <aside className="border-2 border-slate-200 w-12 h-full fixed flex flex-col items-center">
       <Logo logo={logo} />
       <div className="flex flex-col gap-12 items-center">
         <Link to={'/'}>

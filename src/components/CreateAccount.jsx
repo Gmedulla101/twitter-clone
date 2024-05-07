@@ -21,6 +21,9 @@ const CreateAccount = () => {
     email: '',
     password: '',
     username: '',
+    firstName: '',
+    lastName: '',
+    otherNames: '',
     bio: '',
   });
 
@@ -53,12 +56,18 @@ const CreateAccount = () => {
         bio: signInData.bio,
         email: signInData.email,
         username: signInData.username,
+        firstName: signInData.firstName,
+        lastName: signInData.lastName,
+        otherNames: signInData.otherNames,
         userTweets: [],
       });
       setUser({
         bio: signInData.bio,
         email: signInData.email,
         username: signInData.username,
+        firstName: signInData.firstName,
+        lastName: signInData.lastName,
+        otherNames: signInData.otherNames,
         userTweets: [],
       });
       console.log('Submitted!');
@@ -88,6 +97,35 @@ const CreateAccount = () => {
           required
           name="email"
           value={signInData.email}
+          onChange={handleChange}
+          className="border-2 border-slate-600 p-2 rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
+        />
+
+        <input
+          type="text"
+          placeholder="First name"
+          required
+          name="firstName"
+          value={signInData.firstName}
+          onChange={handleChange}
+          className="border-2 border-slate-600 p-2 rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
+        />
+
+        <input
+          type="text"
+          placeholder="Lastname"
+          required
+          name="lastName"
+          value={signInData.lastName}
+          onChange={handleChange}
+          className="border-2 border-slate-600 p-2 rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
+        />
+
+        <input
+          type="text"
+          placeholder="other names"
+          name="otherNames"
+          value={signInData.otherNames}
           onChange={handleChange}
           className="border-2 border-slate-600 p-2 rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
         />
