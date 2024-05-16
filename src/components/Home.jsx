@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 
 //IMPORTING ROUTING DEPENDENCIES
 import { useNavigate, Link } from 'react-router-dom';
+
 //IMPORTING RELEVANT COMPONENTS
 import Tweet from './Tweet';
 import SideBar from './SideBar';
+import cameraImg from '../images/camera.png';
+import cancel from '../images/reject.png';
 
 //IMPORTING CUSTOM HOOKS
 import { useGlobalContext } from '../context';
@@ -17,20 +20,31 @@ import {
   updateDoc,
   doc,
 } from 'firebase/firestore';
-import { auth, db } from '../config/firebase';
+import { auth, db, storage } from '../config/firebase';
 import { data } from 'autoprefixer';
+import { set } from 'firebase/database';
+import { ref, uploadBytes } from 'firebase/storage';
+import { v4 } from 'uuid';
 
 /* COMPONENT START */
 const Home = () => {
+  //GLOBAL CONTEXT VARIABLES
   const [isSignedIn, setIsSignedIn, user] = useGlobalContext();
+
+  //LOADING AND ERRROR STATE FOR FETCHING OPERATION
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
+  const [postError, setPostError] = useState(false);
+
+  //STATE FOR GETTING TWEETS TO DISPLAY ON HOME PAGE
   const [tweets, setTweets] = useState(null);
   const [userTweets, setUserTweets] = useState(null);
-  const [postError, setPostError] = useState(!isSignedIn);
 
+  //DATABAASE COLLECTION REFERENCES FOR THE FETCHED TWEETS
   const tweetCollectionRef = collection(db, 'tweets');
   const userTweetCollectionRef = collection(db, 'users');
+
+  //USE NAVIGATE HOOK INITIALIZATION
   const navigate = useNavigate();
 
   //FUNCTIONALTY FOR GETTING THE DEFAULT TWEETS FROM THE BACKEND
@@ -73,12 +87,12 @@ const Home = () => {
   const tweetsEl = tweets?.map((tweet) => {
     return <Tweet poster={tweet.poster} post={tweet.post} key={tweet.id} />;
   });
-  const userTweetsEl = userTweets?.[0]?.userTweets?.map((userTweet, i) => {
+  const userTweetsEl = userTweets?.[0]?.userTweets?.map((userTweet) => {
     return (
       <Tweet
         poster={userTweet?.poster}
         post={userTweet?.post}
-        key={userTweet?.[i]}
+        key={userTweet?.id}
       />
     );
   });
@@ -112,24 +126,57 @@ const Home = () => {
       await addDoc(tweetCollectionRef, {
         post: textareaContent,
         poster: user?.username ? user?.username : 'Anonymous',
+        userId: auth?.currentUser?.uid,
+        id: v4(),
       });
-      getTweets();
-      setTextAreaContent('');
 
       if (user) {
         const newUserTweetArray = [
           ...user.userTweets,
-          { post: textareaContent, poster: user.username },
+          {
+            post: textareaContent,
+            poster: user.username,
+            id: v4(),
+            userId: auth?.currentUser?.uid,
+          },
         ];
         const userTweetDoc = doc(db, 'users', user.id);
         await updateDoc(userTweetDoc, { userTweets: newUserTweetArray });
         getUserTweets();
       }
+      uploadImage();
+      getTweets();
+      setTextAreaContent('');
 
       console.log('Submitted');
     } catch (error) {
       console.error(error);
     }
+  };
+
+  //ONCHANGE FOR IMAGE POST
+  //STATE FOR THE IMAGE POST PREVIEW
+  const [file, setFile] = useState(null);
+  const [imageDisplay, setImageDislay] = useState(null);
+  const imageChange = (e) => {
+    setImageDislay(URL.createObjectURL(e.target.files[0]));
+    setFile(e.target.files[0]);
+  };
+
+  const removeImage = () => {
+    setImageDislay(null);
+  };
+
+  //FUNCTIONALITY FOR IMAGE UPLOAD
+  const uploadImage = () => {
+    if (file === null) {
+      return;
+    }
+    const tweetImgRef = ref(storage, `tweetImages/${file.name + v4()}`);
+    uploadBytes(tweetImgRef, file).then(() => {
+      setFile(null);
+      setImageDislay(null);
+    });
   };
 
   //FUNCTIONALITY FOR HOME PAGE STATE
@@ -164,12 +211,39 @@ const Home = () => {
             onChange={textChange}
             className="main-content-textarea text-lg p-2 outline-none w-full resize-none"
           ></textarea>
-          <button
-            onClick={createPost}
-            className="px-16 py-3 bg-blue-500 text-white text-lg rounded-3xl flex mx-auto mt-5 w-12 justify-center font-bold hover:bg-blue-600 active:bg-blue-700 lg:w-12"
+          <span
+            className="flex items-center justify-center gap-24
+          "
           >
-            Post
-          </button>
+            <label htmlFor="postPic" className="cursor-pointer">
+              <input
+                type="file"
+                id="postPic"
+                name="postPic"
+                onChange={imageChange}
+                className="hidden"
+              />
+              <img src={cameraImg} alt="" className="w-12" />
+            </label>
+            {/* BUTTON TO CREATE POSTS */}
+            <button
+              onClick={createPost}
+              className="px-16 py-3 bg-blue-500 text-white text-lg rounded-3xl flex w-12 justify-center font-bold hover:bg-blue-600 active:bg-blue-700 lg:w-12"
+            >
+              Post
+            </button>
+          </span>
+          {imageDisplay && (
+            <div className="mt-6 flex items-center justify-center relative">
+              <img src={imageDisplay} alt="" className="w-96 h-64" />
+              <button
+                onClick={removeImage}
+                className="absolute top-[78%] left-[84%] bg-slate-200 p-2 opacity-75 rounded-full text-xl h-12 w-12 grayscale"
+              >
+                <img src={cancel} alt="" />
+              </button>
+            </div>
+          )}
         </div>
 
         <div>
