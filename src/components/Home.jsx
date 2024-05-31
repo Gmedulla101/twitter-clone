@@ -183,6 +183,7 @@ const Home = () => {
         getUserTweets();
       }
 
+      getTweetImages();
       getTweets();
       setTextAreaContent('');
 
