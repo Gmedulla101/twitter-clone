@@ -247,6 +247,7 @@ const Home = () => {
       setFile(null);
       setImageDislay(null);
       console.log('Image submitted');
+      getTweetImages();
     });
   };
 
