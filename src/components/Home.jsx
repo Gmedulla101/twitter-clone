@@ -23,7 +23,7 @@ import {
 import { auth, db, storage } from '../config/firebase';
 import { data } from 'autoprefixer';
 import { set } from 'firebase/database';
-import { ref, uploadBytes } from 'firebase/storage';
+import { ref, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
 
 /* COMPONENT START */
@@ -39,6 +39,7 @@ const Home = () => {
   //STATE FOR GETTING TWEETS TO DISPLAY ON HOME PAGE
   const [tweets, setTweets] = useState(null);
   const [userTweets, setUserTweets] = useState(null);
+  const [tweetImages, setTweetImages] = useState([]);
 
   //DATABAASE COLLECTION REFERENCES FOR THE FETCHED TWEETS
   const tweetCollectionRef = collection(db, 'tweets');
@@ -51,8 +52,12 @@ const Home = () => {
   const getTweets = async () => {
     try {
       const tweetsData = await getDocs(tweetCollectionRef);
+
       const cleanData = tweetsData.docs.map((doc) => {
-        return { ...doc.data(), id: doc.id };
+        return {
+          ...doc.data(),
+          id: doc._document.data.value.mapValue.fields.id.stringValue,
+        };
       });
       setTweets(cleanData);
       setIsLoading(false);
@@ -78,21 +83,46 @@ const Home = () => {
     }
   };
 
+  const getTweetImages = async () => {
+    const tweetImageRef = ref(storage, 'tweetImages/');
+    listAll(tweetImageRef).then((response) => {
+      response.items.forEach((item) => {
+        getDownloadURL(item).then((url) => {
+          setTweetImages((prevImg) => {
+            return [...prevImg, url];
+          });
+        });
+      });
+    });
+  };
+
   useEffect(() => {
     getTweets();
     getUserTweets();
+    getTweetImages();
   }, []);
 
   //SETTING THE TWEETS (USER AND DEFAULT) TO BE DISPLAYED
   const tweetsEl = tweets?.map((tweet) => {
-    return <Tweet poster={tweet.poster} post={tweet.post} key={tweet.id} />;
+    return (
+      <Tweet
+        poster={tweet.poster}
+        post={tweet.post}
+        key={tweet.id}
+        id={tweet.id}
+        tweetImages={tweetImages}
+      />
+    );
   });
+
   const userTweetsEl = userTweets?.[0]?.userTweets?.map((userTweet) => {
     return (
       <Tweet
         poster={userTweet?.poster}
         post={userTweet?.post}
         key={userTweet?.id}
+        id={userTweet.id}
+        tweetImages={tweetImages}
       />
     );
   });
@@ -103,6 +133,9 @@ const Home = () => {
     setTextAreaContent(e.target.value);
   };
 
+  //UNIQUE IDENTIFIER FOR EACH TWEET INSTANCE
+  const tweetId = v4();
+
   //CREATE POST FUNCTIONALITY
   const createPost = async () => {
     //TACKLING EDGE CASES AND PROGRAMMATIC INCONSISTENCIES
@@ -112,7 +145,7 @@ const Home = () => {
     } else {
       setPostError(false);
     }
-    if (textareaContent === '') {
+    if (textareaContent === '' && file === null) {
       alert('Post field is empty, please type in a post');
       return;
     }
@@ -122,21 +155,26 @@ const Home = () => {
     }
 
     //MAIN FUNCTIONALITY
+    if (file) {
+      uploadImage();
+    }
+
     try {
       await addDoc(tweetCollectionRef, {
         post: textareaContent,
         poster: user?.username ? user?.username : 'Anonymous',
         userId: auth?.currentUser?.uid,
-        id: v4(),
+        id: tweetId,
       });
 
+      //ADDING THE INPUTTED TWEET TO THE USERS' USER TWEET FIELD.
       if (user) {
         const newUserTweetArray = [
           ...user.userTweets,
           {
             post: textareaContent,
             poster: user.username,
-            id: v4(),
+            id: tweetId,
             userId: auth?.currentUser?.uid,
           },
         ];
@@ -144,7 +182,7 @@ const Home = () => {
         await updateDoc(userTweetDoc, { userTweets: newUserTweetArray });
         getUserTweets();
       }
-      uploadImage();
+
       getTweets();
       setTextAreaContent('');
 
@@ -158,9 +196,36 @@ const Home = () => {
   //STATE FOR THE IMAGE POST PREVIEW
   const [file, setFile] = useState(null);
   const [imageDisplay, setImageDislay] = useState(null);
-  const imageChange = (e) => {
-    setImageDislay(URL.createObjectURL(e.target.files[0]));
-    setFile(e.target.files[0]);
+
+  const imageChange = (event) => {
+    /* REQUIRED VARIABLES */
+    const MAX_RANDOM_NUMBER = 723947211;
+    const POWER_INDEX = 8056;
+    const file = event.target.files[0];
+
+    /* FUNCTIONALITY */
+    const displayImage = (fileImage) => {
+      const imageUrl = URL.createObjectURL(fileImage);
+      setImageDislay(imageUrl);
+    };
+
+    const generateRandomImageName = (imageName) => {
+      const randomNumber = Math.floor(
+        (Math.random() * MAX_RANDOM_NUMBER) ^ POWER_INDEX
+      );
+      const fileExtension = imageName.slice(imageName.lastIndexOf('.'));
+      return `${randomNumber}${fileExtension}`;
+    };
+
+    const createNewFileWithNewName = (originalFile, newName) => {
+      return new File([originalFile], newName, { type: originalFile.type });
+    };
+
+    /* APPLICATION OF FUNCTIONALITY */
+    displayImage(file);
+    const newFileName = generateRandomImageName(file.name);
+    const newFile = createNewFileWithNewName(file, newFileName);
+    setFile(newFile);
   };
 
   const removeImage = () => {
@@ -172,10 +237,15 @@ const Home = () => {
     if (file === null) {
       return;
     }
-    const tweetImgRef = ref(storage, `tweetImages/${file.name + v4()}`);
+
+    const tweetImgRef = ref(
+      storage,
+      `tweetImages/${file.name + `___${tweetId}`}`
+    );
     uploadBytes(tweetImgRef, file).then(() => {
       setFile(null);
       setImageDislay(null);
+      console.log('Image submitted');
     });
   };
 
