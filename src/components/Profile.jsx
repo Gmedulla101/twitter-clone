@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 //IMPORTING RELEVANT COMPONENTS
 import SideBar from './SideBar';
@@ -19,6 +19,8 @@ const Profile = () => {
   const [isSignedIn, setIsSignedIn, user, setUser] = useGlobalContext();
   const navigate = useNavigate();
 
+  const [isEditingCoverPhoto, setIsEditingCoverPhoto] = useState(false);
+
   const logOut = async () => {
     try {
       await signOut(auth);
@@ -28,6 +30,14 @@ const Profile = () => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const editCoverPhoto = () => {
+    setIsEditingCoverPhoto(true);
+  };
+
+  const saveCoverPhoto = () => {
+    setIsEditingCoverPhoto(false);
   };
 
   const editProfile = () => {
@@ -62,12 +72,30 @@ const Profile = () => {
             </span>
 
             {/* MAIN PROFILE BODY */}
-            <div className="h-60">
-              <img src={cover} alt="" className="w-full h-full" />
+            <div
+              className="h-60 bg-slate-200 flex justify-center items-center gap-4 text-2xl font-bold relative"
+              onClick={editCoverPhoto}
+            >
+              Add a cover photo!
+              <span className="border-2 border-black flex justify-center items-center w-8 h-8 rounded-lg">
+                +{' '}
+              </span>
+              {/* <img src={cover} alt="" className="w-full h-full" /> */}
             </div>
-            <div className="border-4 border-blue-400 w-20 h-20 p-1 rounded-full relative top-[-40px] ml-6 overflow-hidden">
+
+            <div className="bg-white border-4 border-blue-400 w-20 h-20 p-1 rounded-full relative top-[-40px] ml-6 overflow-hidden">
               <img src={userPhoto} alt="" className="rounded-full" />
             </div>
+            {isEditingCoverPhoto ? (
+              <span
+                className="absolute top-[32.7%] right-10 text-base px-6 py-2 bg-blue-500 rounded-3xl text-white cursor-pointer"
+                onClick={saveCoverPhoto}
+              >
+                Save
+              </span>
+            ) : (
+              ''
+            )}
           </section>
 
           <section className="ml-3">
