@@ -12,7 +12,7 @@ import logo from '../images/twitter.png';
 import homeBtn from '../images/home.png';
 import searchBtn from '../images/search.png';
 import notiBtn from '../images/bell.png';
-import profileBtn from '../images/user.png';
+import profileBtn from '../images/profile.png';
 import newTweetBtn from '../images/feather.png';
 
 export default function SideBar() {
@@ -29,16 +29,16 @@ export default function SideBar() {
             className="w-12 cursor-pointer p-2 rounded-full hover:bg-blue-500"
           />
         </Link>
-        <img
+        {/*     <img
           src={searchBtn}
           alt=""
           className="w-12 cursor-pointer p-1 rounded-full hover:bg-blue-500"
-        />
-        <img
+        /> */}
+        {/*   <img
           src={notiBtn}
           alt=""
           className="w-12 cursor-pointer p-2 rounded-full hover:bg-blue-500"
-        />
+        />  */}
         <Link to={'/user-profile'}>
           <img
             src={profileBtn}
@@ -46,11 +46,13 @@ export default function SideBar() {
             className="w-12 cursor-pointer p-2 rounded-full hover:bg-blue-500"
           />
         </Link>
-        <img
-          src={newTweetBtn}
-          alt=""
-          className="w-14 cursor-pointer p-2 rounded-full bg-blue-500 "
-        />
+        <Link to={'/'}>
+          <img
+            src={newTweetBtn}
+            alt=""
+            className="w-14 cursor-pointer p-2 rounded-full bg-blue-500 "
+          />
+        </Link>
       </div>
     </aside>
   );

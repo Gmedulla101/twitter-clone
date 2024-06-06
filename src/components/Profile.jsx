@@ -3,7 +3,7 @@ import React from 'react';
 //IMPORTING RELEVANT COMPONENTS
 import SideBar from './SideBar';
 import cover from '../images/cover.jpg';
-import userPhoto from '../images/user1.jpg';
+import userPhoto from '../images/user.png';
 
 //IMPORTING FIREBASE DEPENDENCIES
 import { auth } from '../config/firebase';
@@ -30,22 +30,23 @@ const Profile = () => {
     }
   };
 
+  const editProfile = () => {
+    console.log('Editing profile');
+  };
+
   return (
     <>
       <SideBar />
       {!auth.currentUser ? (
         <h1 className="ml-12 text-center font-bold text-2xl pt-24">
-          {' '}
-          No user is Logged in. You can{' '}
+          No user is Logged in. You can
           <Link to={'/sign-in'} className="text-blue-500 hover:underline">
-            {' '}
-            Sign in{' '}
-          </Link>{' '}
-          or{' '}
+            Sign in
+          </Link>
+          or
           <Link to={'/sign-up'} className="text-blue-500 hover:underline">
-            {' '}
-            Sign up{' '}
-          </Link>{' '}
+            Sign up
+          </Link>
         </h1>
       ) : (
         <section className="ml-12">
@@ -59,6 +60,8 @@ const Profile = () => {
                 Log out
               </button>
             </span>
+
+            {/* MAIN PROFILE BODY */}
             <div className="h-60">
               <img src={cover} alt="" className="w-full h-full" />
             </div>
@@ -74,6 +77,13 @@ const Profile = () => {
             <p className="text-slate-500"> @{user.username} </p>
             <p className="mt-2"> {user.bio} </p>
           </section>
+          <button
+            className="ml-3 mt-3  px-6 py-2 rounded-3xl bg-blue-500 hover:bg-blue-600 text-white font-bold"
+            onClick={editProfile}
+          >
+            {' '}
+            Edit profile{' '}
+          </button>
         </section>
       )}
     </>

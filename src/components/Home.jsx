@@ -305,12 +305,14 @@ const Home = () => {
               Post
             </button>
           </span>
+
+          {/* IMAGE DISPLAY */}
           {imageDisplay && (
             <div className="mt-6 flex items-center justify-center relative">
-              <img src={imageDisplay} alt="" className="w-96 h-64" />
+              <img src={imageDisplay} alt="" className="w-[87%] h-[20em]" />
               <button
                 onClick={removeImage}
-                className="absolute top-[78%] left-[84%] bg-slate-200 p-2 opacity-75 rounded-full text-xl h-12 w-12 grayscale"
+                className="absolute top-[80%] left-[78%] bg-slate-200 p-2 opacity-75 rounded-full text-xl h-12 w-12 grayscale"
               >
                 <img src={cancel} alt="" />
               </button>

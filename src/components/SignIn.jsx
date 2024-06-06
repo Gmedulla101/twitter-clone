@@ -98,7 +98,7 @@ const CreateAccount = () => {
 
         <button
           onClick={handleSubmit}
-          className="px-16 py-3 bg-blue-500 text-white rounded-3xl flex mx-auto mt-5 w-ssm justify-center font-bold hover:bg-blue-600 active:bg-blue-700 sm:w-96 "
+          className="outline-none px-16 py-3 bg-blue-500 text-white rounded-3xl flex mx-auto mt-5 w-ssm justify-center font-bold hover:bg-blue-600 active:bg-blue-700 sm:w-96 "
         >
           Sign in
         </button>
