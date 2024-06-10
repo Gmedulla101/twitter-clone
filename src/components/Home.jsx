@@ -146,7 +146,7 @@ const Home = () => {
     } else {
       setPostError(false);
     }
-    if (textareaContent === '') {
+    if (textareaContent === '' && file === null) {
       alert('Post field is empty, please type in a post');
       return;
     }

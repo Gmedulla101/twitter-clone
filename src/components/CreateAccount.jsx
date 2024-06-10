@@ -31,11 +31,8 @@ const CreateAccount = () => {
     lastName: '',
     otherNames: '',
     bio: '',
-    profilePic: null,
     userRef: userRef,
   });
-
-  console.log(signUpData);
 
   //UTILISING GLOBAL CONTEXT CUSTOM HOOK
   const [isSignedIn, setIsSignedIn, user, setUser] = useGlobalContext();
@@ -54,20 +51,6 @@ const CreateAccount = () => {
   };
 
   const [errorMessage, setErrorMessage] = useState('');
-
-  const uploadProfileImage = () => {
-    if (signUpData.profilePic === null) {
-      return;
-    } else {
-      const userImageCollectionRef = ref(
-        storage,
-        `userImages/${userRef}/profilePic/${signUpData.profilePic.name}`
-      );
-      uploadBytes(userImageCollectionRef, signUpData.profilePic).then(
-        console.log('profile pic uploaded!')
-      );
-    }
-  };
 
   /* LOGIC FOR PROFILE CREATION */
   const handleSubmit = async () => {
@@ -90,8 +73,6 @@ const CreateAccount = () => {
         otherNames: signUpData.otherNames,
         userTweets: [],
       });
-
-      uploadProfileImage();
 
       setUser({
         bio: signUpData.bio,
@@ -121,14 +102,6 @@ const CreateAccount = () => {
           {' '}
           Create your account with your email and password{' '}
         </h1>
-
-        <input
-          type="file"
-          name="profilePic"
-          onChange={handleChange}
-          className="border-2 border-slate-600 p-2 rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
-        />
-
         <input
           type="email"
           placeholder="Enter your email..."

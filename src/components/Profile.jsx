@@ -76,11 +76,7 @@ const Profile = () => {
               className="h-60 bg-slate-200 flex justify-center items-center gap-4 text-2xl font-bold relative"
               onClick={editCoverPhoto}
             >
-              Add a cover photo!
-              <span className="border-2 border-black flex justify-center items-center w-8 h-8 rounded-lg">
-                +{' '}
-              </span>
-              {/* <img src={cover} alt="" className="w-full h-full" /> */}
+              <img src={cover} alt="" className="w-full h-full" />
             </div>
 
             <div className="bg-white border-4 border-blue-400 w-20 h-20 p-1 rounded-full relative top-[-40px] ml-6 overflow-hidden">
