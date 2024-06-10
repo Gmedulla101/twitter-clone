@@ -10,14 +10,20 @@ import { db } from '../config/firebase';
 //IMPORTING FIREBASE FIRESTORE DEPENDENCIES
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 
-const userCollectionRef = collection(db, 'users');
+//IMPORTING FIREBASE STORAGE DEPENDENCIES
+import { storage } from '../config/firebase';
+import { ref, uploadBytes } from 'firebase/storage';
+import { v4 } from 'uuid';
 
 //IMPORTING RELEVANT COMPONENTS
 import Logo from './Logo';
 import logo from '../images/twitter.png';
+import defaultAvatar from '../images/user.png';
 
 const CreateAccount = () => {
-  const [signInData, setSignInData] = useState({
+  const userRef = v4();
+
+  const [signUpData, setSignUpData] = useState({
     email: '',
     password: '',
     username: '',
@@ -25,7 +31,11 @@ const CreateAccount = () => {
     lastName: '',
     otherNames: '',
     bio: '',
+    profilePic: null,
+    userRef: userRef,
   });
+
+  console.log(signUpData);
 
   //UTILISING GLOBAL CONTEXT CUSTOM HOOK
   const [isSignedIn, setIsSignedIn, user, setUser] = useGlobalContext();
@@ -33,45 +43,66 @@ const CreateAccount = () => {
   //UTILISIING USENAVIGATE HOOK
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setSignInData((prevData) => {
+  const handleChange = (event) => {
+    const { name, type, value, files } = event.target;
+    setSignUpData((prevData) => {
       return {
         ...prevData,
-        [e.target.name]: e.target.value,
+        [name]: type == 'file' ? files[0] : value,
       };
     });
   };
 
   const [errorMessage, setErrorMessage] = useState('');
+
+  const uploadProfileImage = () => {
+    if (signUpData.profilePic === null) {
+      return;
+    } else {
+      const userImageCollectionRef = ref(
+        storage,
+        `userImages/${userRef}/profilePic/${signUpData.profilePic.name}`
+      );
+      uploadBytes(userImageCollectionRef, signUpData.profilePic).then(
+        console.log('profile pic uploaded!')
+      );
+    }
+  };
+
+  /* LOGIC FOR PROFILE CREATION */
   const handleSubmit = async () => {
     try {
       await createUserWithEmailAndPassword(
         auth,
-        signInData.email,
-        signInData.password
+        signUpData.email,
+        signUpData.password
       );
       setIsSignedIn(true);
 
+      const userCollectionRef = collection(db, 'users');
+
       await addDoc(userCollectionRef, {
-        bio: signInData.bio,
-        email: signInData.email,
-        username: signInData.username,
-        firstName: signInData.firstName,
-        lastName: signInData.lastName,
-        otherNames: signInData.otherNames,
+        bio: signUpData.bio,
+        email: signUpData.email,
+        username: signUpData.username,
+        firstName: signUpData.firstName,
+        lastName: signUpData.lastName,
+        otherNames: signUpData.otherNames,
         userTweets: [],
       });
+
+      uploadProfileImage();
+
       setUser({
-        bio: signInData.bio,
-        email: signInData.email,
-        username: signInData.username,
-        firstName: signInData.firstName,
-        lastName: signInData.lastName,
-        otherNames: signInData.otherNames,
+        bio: signUpData.bio,
+        email: signUpData.email,
+        username: signUpData.username,
+        firstName: signUpData.firstName,
+        lastName: signUpData.lastName,
+        otherNames: signUpData.otherNames,
         userTweets: [],
       });
       console.log('Submitted!');
-      console.log(user);
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
         setErrorMessage('Email already exists');
@@ -92,11 +123,18 @@ const CreateAccount = () => {
         </h1>
 
         <input
+          type="file"
+          name="profilePic"
+          onChange={handleChange}
+          className="border-2 border-slate-600 p-2 rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
+        />
+
+        <input
           type="email"
           placeholder="Enter your email..."
           required
           name="email"
-          value={signInData.email}
+          value={signUpData.email}
           onChange={handleChange}
           className="border-2 border-slate-600 p-2 rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
         />
@@ -106,7 +144,7 @@ const CreateAccount = () => {
           placeholder="First name"
           required
           name="firstName"
-          value={signInData.firstName}
+          value={signUpData.firstName}
           onChange={handleChange}
           className="border-2 border-slate-600 p-2 rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
         />
@@ -116,7 +154,7 @@ const CreateAccount = () => {
           placeholder="Lastname"
           required
           name="lastName"
-          value={signInData.lastName}
+          value={signUpData.lastName}
           onChange={handleChange}
           className="border-2 border-slate-600 p-2 rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
         />
@@ -125,7 +163,7 @@ const CreateAccount = () => {
           type="text"
           placeholder="other names"
           name="otherNames"
-          value={signInData.otherNames}
+          value={signUpData.otherNames}
           onChange={handleChange}
           className="border-2 border-slate-600 p-2 rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
         />
@@ -135,7 +173,7 @@ const CreateAccount = () => {
           placeholder="Username..."
           required
           name="username"
-          value={signInData.username}
+          value={signUpData.username}
           onChange={handleChange}
           className="border-2 border-slate-600 p-2 rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
         />
@@ -145,7 +183,7 @@ const CreateAccount = () => {
           placeholder="Enter your desired bio"
           required
           name="bio"
-          value={signInData.bio}
+          value={signUpData.bio}
           onChange={handleChange}
           className="border-2 border-slate-600 p-2 rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
         />
@@ -154,7 +192,7 @@ const CreateAccount = () => {
           type="text"
           placeholder="Password..."
           name="password"
-          value={signInData.password}
+          value={signUpData.password}
           onChange={handleChange}
           className="border-2 border-slate-600 p-2 rounded-lg outline-none focus:border-blue-500 my-2 sm:w-80"
         />

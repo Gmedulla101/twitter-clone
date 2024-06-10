@@ -6,6 +6,7 @@ import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import CreateAccount from './components/CreateAccount';
 import Profile from './components/Profile';
+import EditProfile from './components/EditProfile';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
       <Route path="/sign-in" element={<SignIn />} />
       <Route path="/create-account" element={<CreateAccount />} />
       <Route path="/user-profile" element={<Profile />} />
+      <Route path="/edit-profile" element={<EditProfile />} />
     </Routes>
   );
 };

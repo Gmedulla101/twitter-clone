@@ -26,7 +26,8 @@ import { set } from 'firebase/database';
 import { ref, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
 
-/* COMPONENT START */
+/* MAIN COMPONENT BODY */
+
 const Home = () => {
   //GLOBAL CONTEXT VARIABLES
   const [isSignedIn, setIsSignedIn, user] = useGlobalContext();
@@ -41,15 +42,9 @@ const Home = () => {
   const [userTweets, setUserTweets] = useState(null);
   const [tweetImages, setTweetImages] = useState([]);
 
-  //DATABAASE COLLECTION REFERENCES FOR THE FETCHED TWEETS
-  const tweetCollectionRef = collection(db, 'tweets');
-  const userTweetCollectionRef = collection(db, 'users');
-
-  //USE NAVIGATE HOOK INITIALIZATION
-  const navigate = useNavigate();
-
   //FUNCTIONALTY FOR GETTING THE DEFAULT TWEETS FROM THE BACKEND
   const getTweets = async () => {
+    const tweetCollectionRef = collection(db, 'tweets');
     try {
       const tweetsData = await getDocs(tweetCollectionRef);
 
@@ -59,6 +54,7 @@ const Home = () => {
           id: doc._document.data.value.mapValue.fields.id.stringValue,
         };
       });
+
       setTweets(cleanData);
       setIsLoading(false);
     } catch (error) {
@@ -69,14 +65,18 @@ const Home = () => {
 
   //FUNCTIONALTY FOR GETTING THE USER TWEETS FROM THE BACKEND
   const getUserTweets = async () => {
+    const userTweetCollectionRef = collection(db, 'users');
+
     try {
       const userTweetsData = await getDocs(userTweetCollectionRef);
       const cleanData = userTweetsData.docs.map((doc) => {
         return { ...doc.data(), id: doc.id };
       });
+
       const userInfo = cleanData.filter((data) => {
         return data.username === user?.username;
       });
+
       setUserTweets(userInfo);
     } catch (error) {
       console.error(error);
@@ -85,6 +85,7 @@ const Home = () => {
 
   const getTweetImages = async () => {
     const tweetImageRef = ref(storage, 'tweetImages/');
+
     listAll(tweetImageRef).then((response) => {
       response.items.forEach((item) => {
         getDownloadURL(item).then((url) => {
@@ -145,7 +146,7 @@ const Home = () => {
     } else {
       setPostError(false);
     }
-    if (textareaContent === '' && file === null) {
+    if (textareaContent === '') {
       alert('Post field is empty, please type in a post');
       return;
     }
@@ -186,8 +187,6 @@ const Home = () => {
       getTweetImages();
       getTweets();
       setTextAreaContent('');
-
-      console.log('Submitted');
     } catch (error) {
       console.error(error);
     }
