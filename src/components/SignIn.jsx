@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useGlobalContext } from '../context';
 
@@ -54,7 +54,9 @@ const CreateAccount = () => {
         return data.email === signInData.email;
       });
       const user = userData[0];
-      setUser(user);
+
+      localStorage.setItem('user', JSON.stringify(user));
+      setUser(JSON.parse(localStorage.getItem('user')));
       setIsSignedIn(true);
     } catch (error) {
       if (error.code === 'auth/invalid-credential') {

@@ -24,7 +24,7 @@ const Profile = () => {
   const logOut = async () => {
     try {
       await signOut(auth);
-      setUser(null);
+      localStorage.clear();
       setIsSignedIn(false);
       navigate('/');
     } catch (error) {

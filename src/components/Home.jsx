@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 
 //IMPORTING ROUTING DEPENDENCIES
 import { useNavigate, Link } from 'react-router-dom';
@@ -26,21 +26,45 @@ import { set } from 'firebase/database';
 import { ref, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
 
+//IMPORTING REDUCER ACTIONS
+import {
+  GET_TWEETS,
+  SET_ERROR_TRUE,
+  GET_TWEET_IMAGES,
+  SET_POST_ERROR_TRUE,
+  SET_POST_ERROR_FALSE,
+  STOP_LOADING,
+  GET_USER_TWEETS,
+} from '../modules/actions';
+
+//IMPORTING REDUCER FUNCTION
+import reducer from '../modules/reducer';
+
+//REDUCER DEFAULT STATE OBJECT
+const defaultState = {
+  isLoading: true,
+  isError: false,
+  postError: false,
+  tweets: null,
+  userTweets: null,
+  tweetImages: [],
+};
+
 /* MAIN COMPONENT BODY */
 
 const Home = () => {
   //GLOBAL CONTEXT VARIABLES
-  const [isSignedIn, setIsSignedIn, user] = useGlobalContext();
+  const [isSignedIn, setIsSignedIn, user, setUser] = useGlobalContext();
 
-  //LOADING AND ERRROR STATE FOR FETCHING OPERATION
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-  const [postError, setPostError] = useState(false);
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('user'));
+    setUser(userData);
+  }, []);
 
-  //STATE FOR GETTING TWEETS TO DISPLAY ON HOME PAGE
-  const [tweets, setTweets] = useState(null);
-  const [userTweets, setUserTweets] = useState(null);
-  const [tweetImages, setTweetImages] = useState([]);
+  //USEREDUCER HOOK UTILISATION
+  const [reducerState, dispatch] = useReducer(reducer, defaultState);
+  const { isLoading, isError, postError, tweets, userTweets, tweetImages } =
+    reducerState;
 
   //FUNCTIONALTY FOR GETTING THE DEFAULT TWEETS FROM THE BACKEND
   const getTweets = async () => {
@@ -54,11 +78,11 @@ const Home = () => {
           id: doc._document.data.value.mapValue.fields.id.stringValue,
         };
       });
+      dispatch({ type: GET_TWEETS, payload: { cleanData } });
 
-      setTweets(cleanData);
-      setIsLoading(false);
+      dispatch({ type: STOP_LOADING });
     } catch (error) {
-      setIsError(true);
+      dispatch({ type: SET_ERROR_TRUE });
       console.error(error);
     }
   };
@@ -76,8 +100,7 @@ const Home = () => {
       const userInfo = cleanData.filter((data) => {
         return data.username === user?.username;
       });
-
-      setUserTweets(userInfo);
+      dispatch({ type: GET_USER_TWEETS, payload: { userInfo } });
     } catch (error) {
       console.error(error);
     }
@@ -89,9 +112,7 @@ const Home = () => {
     listAll(tweetImageRef).then((response) => {
       response.items.forEach((item) => {
         getDownloadURL(item).then((url) => {
-          setTweetImages((prevImg) => {
-            return [...prevImg, url];
-          });
+          dispatch({ type: GET_TWEET_IMAGES, payload: { url } });
         });
       });
     });
@@ -141,17 +162,18 @@ const Home = () => {
   const createPost = async () => {
     //TACKLING EDGE CASES AND PROGRAMMATIC INCONSISTENCIES
     if (!user) {
-      setPostError(true);
+      dispatch({ type: SET_POST_ERROR_TRUE });
+
       return;
     } else {
-      setPostError(false);
+      dispatch({ type: SET_POST_ERROR_FALSE });
     }
     if (textareaContent === '' && file === null) {
       alert('Post field is empty, please type in a post');
       return;
     }
     if (!auth.currentUser) {
-      setPostError(true);
+      dispatch({ type: SET_POST_ERROR_TRUE });
       return;
     }
 
