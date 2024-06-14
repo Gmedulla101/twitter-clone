@@ -181,7 +181,7 @@ const Home = () => {
     if (file) {
       uploadImage();
     }
-
+    const tweetCollectionRef = collection(db, 'tweets');
     try {
       await addDoc(tweetCollectionRef, {
         post: textareaContent,
@@ -405,7 +405,9 @@ const Home = () => {
       </div>
 
       {/* CONDITIONAL SIGN IN BAR */}
-      {isSignedIn || (
+      {user ? (
+        ''
+      ) : (
         <div className="signInBar h-18 bg-blue-500 fixed w-full top-[90%] text-white flex justify-between items-center px-6">
           <div className="ssm: hidden sm:block">
             <h3 className="font-bold"> Don't miss what's happening </h3>
