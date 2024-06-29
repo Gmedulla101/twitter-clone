@@ -56,10 +56,7 @@ const Home = () => {
   //GLOBAL CONTEXT VARIABLES
   const { isSignedIn, setIsSignedIn, user, setUser } = useGlobalContext();
 
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user'));
-    setUser(userData);
-  }, []);
+  console.log(user);
 
   //USEREDUCER HOOK UTILISATION
   const [reducerState, dispatch] = useReducer(reducer, defaultState);
@@ -119,6 +116,8 @@ const Home = () => {
   };
 
   useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('user'));
+    setUser(userData);
     getTweets();
     getUserTweets();
     getTweetImages();

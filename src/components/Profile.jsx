@@ -51,8 +51,6 @@ const Profile = () => {
     console.log('Editing profile');
   };
 
-  console.log(user);
-
   return (
     <>
       <SideBar />
