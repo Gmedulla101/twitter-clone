@@ -54,7 +54,7 @@ const defaultState = {
 
 const Home = () => {
   //GLOBAL CONTEXT VARIABLES
-  const [isSignedIn, setIsSignedIn, user, setUser] = useGlobalContext();
+  const { isSignedIn, setIsSignedIn, user, setUser } = useGlobalContext();
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user'));

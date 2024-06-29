@@ -3,13 +3,26 @@ import SideBar from './SideBar';
 import cameraImg from '../images/camera.png';
 import userPhoto from '../images/user.png';
 
-const EditProfile = () => {
-  const saveEdit = () => {
-    alert('Edit has been saved');
-  };
+//IMPORTING FIREBASE DEPENDENCIES
+import { auth, db } from '../config/firebase';
+import { updateDoc, doc } from 'firebase/firestore';
 
-  const [coverPhoto, setCoverPhoto] = useState();
-  const [profilePic, setProfilePic] = useState();
+//IMPORTING REACT ROUTER NAVIGATE
+import { useNavigate } from 'react-router-dom';
+
+//IMPORTING GLOBAL CONTEXT
+import { useGlobalContext } from '../context';
+
+const EditProfile = () => {
+  const { user, isSignedIn, setUser, setIsSignedIn } = useGlobalContext();
+  console.log(user);
+
+  //IMAGE FUNCTIONALITY
+
+  const [photo, setPhoto] = useState({
+    coverPhoto: null,
+    profilePic: null,
+  });
   const [coverDisplay, setCoverDisplay] = useState();
   const [profilePicDisplay, setProfilePicDisplay] = useState();
 
@@ -18,10 +31,46 @@ const EditProfile = () => {
     const imageUrl = URL.createObjectURL(files[0]);
     if (id === 'coverPhoto') {
       setCoverDisplay(imageUrl);
-      setCoverPhoto(files[0]);
+      setPhoto((prevPhoto) => {
+        return { ...photo, coverPhoto: files[0] };
+      });
     } else {
       setProfilePicDisplay(imageUrl);
-      setProfilePic(files[0]);
+      setPhoto((prevPhoto) => {
+        return { ...photo, profilePic: files[0] };
+      });
+    }
+  };
+
+  //TEXT FUNCTIONALITY
+  const [profileDetails, setProfileDetails] = useState({
+    bio: '',
+  });
+  const textChange = (event) => {
+    const { value, name } = event.target;
+    setProfileDetails((details) => {
+      return { ...details, [name]: value };
+    });
+  };
+
+  console.log(profileDetails);
+
+  //UPDATING FUNCTIONALITY
+  const navigate = useNavigate();
+  const saveEdit = async () => {
+    const userDoc = doc(db, 'users', user.id);
+    try {
+      //TARGETGIN EDGE CASES
+      if (profileDetails.bio === '') {
+        await updateDoc(userDoc, { bio: user.bio });
+      }
+
+      await updateDoc(userDoc, { bio: profileDetails.bio });
+      const newUserData = { ...user, bio: profileDetails.bio };
+      localStorage.setItem('user', JSON.stringify(newUserData));
+      navigate('/user-profile');
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -92,17 +141,21 @@ const EditProfile = () => {
           />
         </label>
 
-        <input
+        {/*   
+      FUNCTIONALITY FOR NAME CHANGE WILL BE ADDED LATER
+    <input
           type="text"
           name="name"
           placeholder="Edit your profile name"
           className="text-center border-2 border-slate-600 p-2 w-full rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
-        />
+          onChange={textChange}
+        /> */}
         <input
           type="text"
           name="bio"
           placeholder="Edit your bio"
           className="text-center border-2 border-slate-600 p-2 w-full mt-12 rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
+          onChange={textChange}
         />
       </div>
     </section>

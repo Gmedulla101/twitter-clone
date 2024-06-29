@@ -16,7 +16,7 @@ import profileBtn from '../images/profile.png';
 import newTweetBtn from '../images/feather.png';
 
 export default function SideBar() {
-  const [isSignedIn, setIsSignedIn, user] = useGlobalContext();
+  const { isSignedIn, setIsSignedIn, user } = useGlobalContext();
 
   return (
     <aside className="border-2 border-slate-200 w-12 h-full fixed flex flex-col items-center">

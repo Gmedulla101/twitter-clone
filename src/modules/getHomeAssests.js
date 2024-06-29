@@ -1,7 +1,6 @@
-/* 
 //IMPORTING REQUIRED FIREBASE DEPENDENCIES
-import { getDocs, collection } from "firebase/firestore";
-import { listAll, getDownloadURL } from "firebase/storage";
+import { getDocs, collection } from 'firebase/firestore';
+import { listAll, getDownloadURL } from 'firebase/storage';
 
 //IMPORTING REDUCER ACTIONS
 import {
@@ -12,17 +11,8 @@ import {
   GET_USER_TWEETS,
 } from '../modules/actions';
 
-
-//REDUCER DEFAULT STATE OBJECT
-const defaultState = {
-  isLoading: true,
-  isError: false,
-  postError: false,
-  tweets: null,
-  userTweets: null,
-  tweetImages: [],
-};
-
+//IMPORTING REDUCER
+import reducer from './reducer';
 
 //FUNCTIONALTY FOR GETTING THE DEFAULT TWEETS FROM THE BACKEND
 const getTweets = async () => {
@@ -64,7 +54,6 @@ const getUserTweets = async () => {
   }
 };
 
-
 //FUNCTIONALITY TO GET TWEET IMAGES
 const getTweetImages = async () => {
   const tweetImageRef = ref(storage, 'tweetImages/');
@@ -77,4 +66,3 @@ const getTweetImages = async () => {
     });
   });
 };
- */

@@ -24,7 +24,7 @@ const userCollectionRef = collection(db, 'users');
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const [user, setUser, isSignedIn, setIsSignedIn] = useGlobalContext();
+  const { user, setUser, isSignedIn, setIsSignedIn } = useGlobalContext();
 
   const signInWithGoogle = async () => {
     try {

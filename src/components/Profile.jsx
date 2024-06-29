@@ -16,7 +16,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../context';
 
 const Profile = () => {
-  const [isSignedIn, setIsSignedIn, user, setUser] = useGlobalContext();
+  const { isSignedIn, setIsSignedIn, user, setUser } = useGlobalContext();
   const navigate = useNavigate();
 
   const [isEditingCoverPhoto, setIsEditingCoverPhoto] = useState(false);
@@ -43,6 +43,8 @@ const Profile = () => {
   const editProfile = () => {
     console.log('Editing profile');
   };
+
+  console.log(user);
 
   return (
     <>
@@ -96,7 +98,7 @@ const Profile = () => {
 
           <section className="ml-3">
             <h4 className="font-bold text-2xl ">
-              {setUser.firstName} {user.lastName} {user.otherNames}
+              {user.firstName} {user.lastName} {user.otherNames}
             </h4>
             <p className="text-slate-500"> @{user.username} </p>
             <p className="mt-2"> {user.bio} </p>

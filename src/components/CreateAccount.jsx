@@ -35,7 +35,7 @@ const CreateAccount = () => {
   });
 
   //UTILISING GLOBAL CONTEXT CUSTOM HOOK
-  const [isSignedIn, setIsSignedIn, user, setUser] = useGlobalContext();
+  const { isSignedIn, setIsSignedIn, user, setUser } = useGlobalContext();
 
   //UTILISIING USENAVIGATE HOOK
   const navigate = useNavigate();

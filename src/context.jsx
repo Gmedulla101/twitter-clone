@@ -6,7 +6,7 @@ const GlobalContext = createContext();
 export const useGlobalContext = () => {
   const { user, setUser, isSignedIn, setIsSignedIn } =
     useContext(GlobalContext);
-  return [user, setUser, isSignedIn, setIsSignedIn];
+  return { user, setUser, isSignedIn, setIsSignedIn };
 };
 
 const AppContext = ({ children }) => {
