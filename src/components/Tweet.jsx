@@ -1,4 +1,6 @@
 import React from 'react';
+import commentBtn from '../images/chat.png';
+import likeBtn from '../images/like.png';
 
 const Tweet = ({ poster, post, tweetImages, id }) => {
   const tweetImagesId = tweetImages?.map((tweetImage, i) => {
@@ -15,7 +17,7 @@ const Tweet = ({ poster, post, tweetImages, id }) => {
   });
 
   return (
-    <article className="border-2 border-slate-200 p-3">
+    <article className="border-2 border-slate-200 p-3 shadow-lg">
       <h2 className="poster font-bold"> {poster} </h2>
       <p className="mb-4">{post}</p>
       {particularImage.length != 0 ? (
@@ -29,6 +31,14 @@ const Tweet = ({ poster, post, tweetImages, id }) => {
       ) : (
         ''
       )}
+      <div className=" w-full flex justify-around p-2">
+        <button className="w-1/3 flex justify-center items-center hover:bg-gray-200 active:bg-gray-300 rounded-full">
+          <img src={commentBtn} alt="" className="w-10" />{' '}
+        </button>
+        <button className="w-1/3 flex justify-center items-center hover:bg-gray-200 active:bg-gray-300 rounded-full">
+          <img src={likeBtn} alt="" className="w-8" />
+        </button>
+      </div>
     </article>
   );
 };

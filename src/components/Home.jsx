@@ -56,8 +56,6 @@ const Home = () => {
   //GLOBAL CONTEXT VARIABLES
   const { isSignedIn, setIsSignedIn, user, setUser } = useGlobalContext();
 
-  console.log(user);
-
   //USEREDUCER HOOK UTILISATION
   const [reducerState, dispatch] = useReducer(reducer, defaultState);
   const { isLoading, isError, postError, tweets, userTweets, tweetImages } =
@@ -184,8 +182,10 @@ const Home = () => {
     try {
       await addDoc(tweetCollectionRef, {
         post: textareaContent,
-        poster: user?.username ? user?.username : 'Anonymous',
+        poster: user?.username,
         userId: auth?.currentUser?.uid,
+        comments: [],
+        likes: 0,
         id: tweetId,
       });
 
@@ -197,6 +197,8 @@ const Home = () => {
             post: textareaContent,
             poster: user.username,
             id: tweetId,
+            comments: [],
+            likes: 0,
             userId: auth?.currentUser?.uid,
           },
         ];
