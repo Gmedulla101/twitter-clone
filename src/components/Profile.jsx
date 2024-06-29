@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 //IMPORTING RELEVANT COMPONENTS
 import SideBar from './SideBar';
@@ -17,6 +17,13 @@ import { useGlobalContext } from '../context';
 
 const Profile = () => {
   const { isSignedIn, setIsSignedIn, user, setUser } = useGlobalContext();
+
+  useEffect(() => {
+    if (!user) {
+      setUser(JSON.parse(localStorage.getItem('user')));
+    }
+  }, []);
+
   const navigate = useNavigate();
 
   const [isEditingCoverPhoto, setIsEditingCoverPhoto] = useState(false);
@@ -49,7 +56,7 @@ const Profile = () => {
   return (
     <>
       <SideBar />
-      {!auth.currentUser ? (
+      {!user ? (
         <h1 className="ml-12 text-center font-bold text-2xl pt-24">
           No user is Logged in. You can
           <Link to={'/sign-in'} className="text-blue-500 hover:underline">
@@ -98,10 +105,10 @@ const Profile = () => {
 
           <section className="ml-3">
             <h4 className="font-bold text-2xl ">
-              {user.firstName} {user.lastName} {user.otherNames}
+              {user?.firstName} {user?.lastName} {user?.otherNames}
             </h4>
-            <p className="text-slate-500"> @{user.username} </p>
-            <p className="mt-2"> {user.bio} </p>
+            <p className="text-slate-500"> @{user?.username} </p>
+            <p className="mt-2"> {user?.bio} </p>
           </section>
           <Link to={'/edit-profile'}>
             <button

@@ -74,7 +74,7 @@ const CreateAccount = () => {
         userTweets: [],
       });
 
-      setUser({
+      const userData = {
         bio: signUpData.bio,
         email: signUpData.email,
         username: signUpData.username,
@@ -82,7 +82,12 @@ const CreateAccount = () => {
         lastName: signUpData.lastName,
         otherNames: signUpData.otherNames,
         userTweets: [],
-      });
+      };
+
+      localStorage.setItem('user', JSON.stringify(userData));
+
+      setUser(JSON.parse(localStorage.getItem('user')));
+
       console.log('Submitted!');
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
