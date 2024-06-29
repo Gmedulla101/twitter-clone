@@ -129,6 +129,8 @@ const Home = () => {
         post={tweet.post}
         key={tweet.id}
         id={tweet.id}
+        likes={tweet.likes}
+        comments={tweet.comments}
         tweetImages={tweetImages}
       />
     );
@@ -141,6 +143,8 @@ const Home = () => {
         post={userTweet?.post}
         key={userTweet?.id}
         id={userTweet.id}
+        likes={userTweet.likes}
+        comments={userTweet.comments}
         tweetImages={tweetImages}
       />
     );
@@ -371,8 +375,7 @@ const Home = () => {
                 : { textDecoration: 'none' }
             }
           >
-            {' '}
-            My tweets{' '}
+            My tweets
           </button>
         </div>
         {homeState ? (
@@ -387,7 +390,7 @@ const Home = () => {
             )}
           </section>
         ) : (
-          <section>
+          <section className="tweets mt-7">
             {isLoading ? (
               <h2 className="text-center font-bold text-xl my-10">
                 {' '}

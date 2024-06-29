@@ -1,8 +1,13 @@
 import React from 'react';
+
+//IMPORTING REACT ROUTER DOM DEPENDENCIES
+import { Link } from 'react-router-dom';
+
+//IMPORTING IMAGE ASSETS
 import commentBtn from '../images/chat.png';
 import likeBtn from '../images/like.png';
 
-const Tweet = ({ poster, post, tweetImages, id }) => {
+const Tweet = ({ poster, post, tweetImages, id, comments, likes }) => {
   const tweetImagesId = tweetImages?.map((tweetImage, i) => {
     return {
       imageUrl: tweetImage,
@@ -32,12 +37,24 @@ const Tweet = ({ poster, post, tweetImages, id }) => {
         ''
       )}
       <div className=" w-full flex justify-around p-2">
-        <button className="w-1/3 flex justify-center items-center hover:bg-gray-200 active:bg-gray-300 rounded-full">
-          <img src={commentBtn} alt="" className="w-10" />{' '}
-        </button>
-        <button className="w-1/3 flex justify-center items-center hover:bg-gray-200 active:bg-gray-300 rounded-full">
-          <img src={likeBtn} alt="" className="w-8" />
-        </button>
+        <Link
+          to={'/comments'}
+          className="w-1/3 flex justify-center items-center hover:bg-gray-200 active:bg-gray-300 rounded-full"
+        >
+          <button className="flex gap-1">
+            <img src={commentBtn} alt="" className="w-10" />
+            <p className="text-xl relative top-1">{comments.length}</p>
+          </button>
+        </Link>
+        <Link
+          to={'#'}
+          className="w-1/3 flex justify-center items-center hover:bg-gray-200 active:bg-gray-300 rounded-full"
+        >
+          <button className="flex gap-1">
+            <img src={likeBtn} alt="" className="w-8" />
+            <p className="text-xl">{likes}</p>
+          </button>
+        </Link>
       </div>
     </article>
   );
