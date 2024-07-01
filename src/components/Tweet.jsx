@@ -12,7 +12,6 @@ import commentBtn from '../images/chat.png';
 import likeBtn from '../images/like.png';
 
 const Tweet = ({ poster, post, tweetImages, id, comments, likes }) => {
-  const [tweetComments, setTweetComments] = useState(comments);
   const [commentOpen, setCommentOpen] = useState(false);
 
   //TWEET IMAGE LOGIC
@@ -55,7 +54,7 @@ const Tweet = ({ poster, post, tweetImages, id, comments, likes }) => {
           className="w-1/3 flex justify-center gap-1 hover:bg-gray-200 active:bg-gray-300 rounded-full"
         >
           <img src={commentBtn} alt="" className="w-10" />
-          <p className="text-xl relative top-1">{tweetComments?.length}</p>
+          <p className="text-xl relative top-1">{comments?.length}</p>
         </button>
 
         <button className="w-1/3 flex justify-center items-center gap-1 hover:bg-gray-200 active:bg-gray-300 rounded-full">
@@ -67,7 +66,11 @@ const Tweet = ({ poster, post, tweetImages, id, comments, likes }) => {
       <div>
         {commentOpen &&
           createPortal(
-            <Comment comments={comments} setCommentOpen={setCommentOpen} />,
+            <Comment
+              comments={comments}
+              setCommentOpen={setCommentOpen}
+              tweetId={id}
+            />,
             document.querySelector('#root')
           )}
       </div>
