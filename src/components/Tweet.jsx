@@ -34,7 +34,7 @@ const Tweet = ({ poster, post, tweetImages, id, comments, likes }) => {
   };
 
   return (
-    <article className="border-2 border-slate-200 p-3 shadow-lg">
+    <article className="border-2 border-slate-200 p-3">
       <h2 className="poster font-bold"> {poster} </h2>
       <p className="mb-4">{post}</p>
       {particularImage.length != 0 ? (
