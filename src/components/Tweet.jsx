@@ -1,4 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
+
+//IMPORTING HELPER COMPONENTS
+import Comment from './Comment';
 
 //IMPORTING REACT ROUTER DOM DEPENDENCIES
 import { Link } from 'react-router-dom';
@@ -8,6 +12,10 @@ import commentBtn from '../images/chat.png';
 import likeBtn from '../images/like.png';
 
 const Tweet = ({ poster, post, tweetImages, id, comments, likes }) => {
+  const [tweetComments, setTweetComments] = useState(comments);
+  const [commentOpen, setCommentOpen] = useState(false);
+
+  //TWEET IMAGE LOGIC
   const tweetImagesId = tweetImages?.map((tweetImage, i) => {
     return {
       imageUrl: tweetImage,
@@ -20,6 +28,11 @@ const Tweet = ({ poster, post, tweetImages, id, comments, likes }) => {
   const particularImage = tweetImagesId.filter((tweetImageId) => {
     return tweetImageId.imageId === id;
   });
+
+  //TWEET COMMENT LOGIC
+  const createComment = () => {
+    setCommentOpen(true);
+  };
 
   return (
     <article className="border-2 border-slate-200 p-3 shadow-lg">
@@ -37,24 +50,26 @@ const Tweet = ({ poster, post, tweetImages, id, comments, likes }) => {
         ''
       )}
       <div className=" w-full flex justify-around p-2">
-        <Link
-          to={'/comments'}
-          className="w-1/3 flex justify-center items-center hover:bg-gray-200 active:bg-gray-300 rounded-full"
+        <button
+          onClick={createComment}
+          className="w-1/3 flex justify-center gap-1 hover:bg-gray-200 active:bg-gray-300 rounded-full"
         >
-          <button className="flex gap-1">
-            <img src={commentBtn} alt="" className="w-10" />
-            <p className="text-xl relative top-1">{comments.length}</p>
-          </button>
-        </Link>
-        <Link
-          to={'#'}
-          className="w-1/3 flex justify-center items-center hover:bg-gray-200 active:bg-gray-300 rounded-full"
-        >
-          <button className="flex gap-1">
-            <img src={likeBtn} alt="" className="w-8" />
-            <p className="text-xl">{likes}</p>
-          </button>
-        </Link>
+          <img src={commentBtn} alt="" className="w-10" />
+          <p className="text-xl relative top-1">{tweetComments?.length}</p>
+        </button>
+
+        <button className="w-1/3 flex justify-center items-center gap-1 hover:bg-gray-200 active:bg-gray-300 rounded-full">
+          <img src={likeBtn} alt="" className="w-8" />
+          <p className="text-xl relative -top-[2px]">{likes}</p>
+        </button>
+      </div>
+
+      <div>
+        {commentOpen &&
+          createPortal(
+            <Comment comments={comments} setCommentOpen={setCommentOpen} />,
+            document.querySelector('#root')
+          )}
       </div>
     </article>
   );

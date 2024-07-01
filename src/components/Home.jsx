@@ -294,8 +294,8 @@ const Home = () => {
       <SideBar />
 
       {/* MAIN BODY SECTION */}
-      <div className="main-scroll ml-12 border-2 border-slate-200">
-        <h1 className="text-2xl font-bold px-2 py-2"> Home </h1>
+      <div id="home" className="main-scroll ml-12 border-2 border-slate-200">
+        <h1 className="text-2xl font-bold px-2 py-2 relative"> Home </h1>
 
         <div className="py-3 border-2 border-slate-200">
           <textarea
