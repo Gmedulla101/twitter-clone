@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 
 //IMPORTING HELPER COMPONENTS
 import Comment from './Comment';
+import SignIn from './SignIn';
 
 //IMPORTING REACT ROUTER DOM DEPENDENCIES
 import { Link } from 'react-router-dom';
@@ -11,7 +12,15 @@ import { Link } from 'react-router-dom';
 import commentBtn from '../images/chat.png';
 import likeBtn from '../images/like.png';
 
+//IMPORTING HELPER MODULES
+import { useGlobalContext } from '../context';
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 const Tweet = ({ poster, post, tweetImages, id, comments, likes }) => {
+  const { user } = useGlobalContext();
+
   const [commentOpen, setCommentOpen] = useState(false);
 
   //TWEET IMAGE LOGIC
@@ -30,6 +39,11 @@ const Tweet = ({ poster, post, tweetImages, id, comments, likes }) => {
 
   //TWEET COMMENT LOGIC
   const createComment = () => {
+    //ADDING EDGE CASES
+    if (!user) {
+      alert('Please login or sign up to use core functionality');
+      return;
+    }
     setCommentOpen(true);
   };
 

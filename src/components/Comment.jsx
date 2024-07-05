@@ -7,9 +7,7 @@ import { useNavigate } from 'react-router-dom';
 //IMPORTING HELPER COMPONENTS
 
 const Comment = ({ comments, setCommentOpen, tweetId }) => {
-  console.log(tweetId);
   const { user } = useGlobalContext();
-  console.log(user.username);
 
   const [commentText, setCommentText] = useState('');
   const handleChange = (event) => {
