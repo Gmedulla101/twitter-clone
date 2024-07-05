@@ -71,8 +71,10 @@ const Home = () => {
         return {
           ...doc.data(),
           id: doc._document.data.value.mapValue.fields.id.stringValue,
+          docId: doc.id,
         };
       });
+
       dispatch({ type: GET_TWEETS, payload: { cleanData } });
 
       dispatch({ type: STOP_LOADING });
@@ -129,6 +131,7 @@ const Home = () => {
         post={tweet.post}
         key={tweet.id}
         id={tweet.id}
+        docId={tweet.docId}
         likes={tweet.likes}
         comments={tweet.comments}
         tweetImages={tweetImages}

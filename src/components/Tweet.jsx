@@ -18,7 +18,7 @@ import { useGlobalContext } from '../context';
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const Tweet = ({ poster, post, tweetImages, id, comments, likes }) => {
+const Tweet = ({ poster, post, tweetImages, id, comments, likes, docId }) => {
   const { user } = useGlobalContext();
 
   const [commentOpen, setCommentOpen] = useState(false);
@@ -83,7 +83,7 @@ const Tweet = ({ poster, post, tweetImages, id, comments, likes }) => {
             <Comment
               comments={comments}
               setCommentOpen={setCommentOpen}
-              tweetId={id}
+              tweetId={docId}
             />,
             document.querySelector('#root')
           )}

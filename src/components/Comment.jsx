@@ -36,9 +36,9 @@ const Comment = ({ comments, setCommentOpen, tweetId }) => {
     }
   };
 
-  const commentEl = comments?.map((comment) => {
+  const commentEl = comments?.map((comment, i) => {
     return (
-      <article className="border-2 border-slate-200 p-3 shadow-lg">
+      <article className="border-2 border-slate-200 p-3 shadow-lg" key={i}>
         <h2 className="poster font-bold">{comment?.poster}</h2>
         <p className="mb-4">{comment?.post}</p>
       </article>
@@ -73,13 +73,7 @@ const Comment = ({ comments, setCommentOpen, tweetId }) => {
       </section>
 
       {/* THE COMMENTS */}
-      <section>
-        <article className="border-2 border-slate-200 p-3 shadow-lg">
-          <h2 className="poster font-bold">MothersMilk</h2>
-          <p className="mb-4">Nor go commit anything o</p>
-          {commentEl}
-        </article>
-      </section>
+      <section>{commentEl}</section>
     </div>
   );
 };
