@@ -4,8 +4,10 @@ import { useGlobalContext } from '../context';
 import { db } from '../config/firebase';
 import { useNavigate } from 'react-router-dom';
 
-//IMPORTING HELPER COMPONENTS
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//MAIN COMPONENT BODY
 const Comment = ({ comments, setCommentOpen, tweetId }) => {
   const { user } = useGlobalContext();
 
@@ -29,8 +31,10 @@ const Comment = ({ comments, setCommentOpen, tweetId }) => {
       await updateDoc(commentDoc, { comments: newCommentArray });
       await updateDoc(userCommentDoc, { comments: newCommentArray });
       setCommentText('');
-      navigate('/');
+      setCommentOpen(false);
       console.log('Comment submitted!!');
+      navigate(0);
+      navigate('/');
     } catch (error) {
       console.error(error);
     }
@@ -38,7 +42,7 @@ const Comment = ({ comments, setCommentOpen, tweetId }) => {
 
   const commentEl = comments?.map((comment, i) => {
     return (
-      <article className="border-2 border-slate-200 p-3 shadow-lg" key={i}>
+      <article className="border-2 border-slate-200 p-3" key={i}>
         <h2 className="poster font-bold">{comment?.poster}</h2>
         <p className="mb-4">{comment?.post}</p>
       </article>

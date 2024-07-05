@@ -50,9 +50,19 @@ const defaultState = {
   tweetImages: [],
 };
 
-/* MAIN COMPONENT BODY */
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//MAIN COMPONENT BODY
 
 const Home = () => {
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('user'));
+    setUser(userData);
+    getTweets();
+    getUserTweets();
+    getTweetImages();
+  }, []);
   //GLOBAL CONTEXT VARIABLES
   const { isSignedIn, setIsSignedIn, user, setUser } = useGlobalContext();
 
@@ -114,14 +124,6 @@ const Home = () => {
       });
     });
   };
-
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user'));
-    setUser(userData);
-    getTweets();
-    getUserTweets();
-    getTweetImages();
-  }, []);
 
   //SETTING THE TWEETS (USER AND DEFAULT) TO BE DISPLAYED
   const tweetsEl = tweets?.map((tweet) => {

@@ -20,7 +20,10 @@ import { Link, useNavigate } from 'react-router-dom';
 //IMPORTING CUSTOM HOOKS
 import { useGlobalContext } from '../context';
 
-const userCollectionRef = collection(db, 'users');
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//MAIN COMPONENT BODY
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -30,6 +33,8 @@ const SignUp = () => {
     try {
       await signInWithPopup(auth, googleProvider);
       const { email, photoURL, displayName, uid } = auth.currentUser;
+
+      const userCollectionRef = collection(db, 'users');
 
       //ADDING THE NEWLY CREATED USER TO THE USER LIST
       await addDoc(userCollectionRef, {
