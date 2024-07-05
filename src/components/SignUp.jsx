@@ -57,25 +57,23 @@ const SignUp = () => {
           <h2 className="font-bold text-6xl my-12">Happening now</h2>
           <h4 className="font-bold text-3xl">Join today.</h4>
 
-          <button
-            onClick={signInWithGoogle}
-            className="flex items-center justify-center mx-auto px-12 py-2 w-ssm mt-16 mb-5 border-slate-300 border-2 rounded-3xl hover:bg-slate-200 active:bg-slate-300 gap-3 lg:w-10/12"
-          >
+          <Link to={'/create-account'}>
+            <button className="px-16 py-3 bg-blue-500 text-white rounded-3xl flex mx-auto mt-16 mb-5 w-ssm justify-center font-bold hover:bg-blue-600 active:bg-blue-700 lg:w-10/12">
+              Create an account{' '}
+            </button>{' '}
+          </Link>
+
+          <p className="text-center"> or </p>
+
+          <button className="flex items-center justify-center mx-auto px-12 py-2 w-ssm mb-5 mt-5 border-slate-300 border-2 rounded-3xl hover:bg-slate-200 active:bg-slate-300 gap-3 lg:w-10/12 opacity-50">
             Sign up with Google
             <img src={googleLogo} alt="google image" className="w-4" />
           </button>
 
-          <button className="flex items-center justify-center mx-auto px-12 py-2 w-ssm mt-5 mb-5 border-slate-300 border-2 rounded-3xl hover:bg-slate-200 active:bg-slate-300 gap-3 lg:w-10/12">
+          <button className="flex items-center justify-center mx-auto px-12 py-2 w-ssm mt-5 mb-5 bsorder-slate-300 border-2 rounded-3xl hover:bg-slate-200 active:bg-slate-300 gap-3 lg:w-10/12 opacity-50">
             <img src={appleLogo} alt="Apple logo" className="w-5" /> Sign up
             with Apple
           </button>
-          <p className="text-center"> or </p>
-
-          <Link to={'/create-account'}>
-            <button className="px-16 py-3 bg-blue-500 text-white rounded-3xl flex mx-auto mt-5 w-ssm justify-center font-bold hover:bg-blue-600 active:bg-blue-700 lg:w-10/12">
-              Create an account{' '}
-            </button>{' '}
-          </Link>
 
           <h4 className="my-10 font-bold"> Already have an account? </h4>
           <Link to={'/sign-in'}>
