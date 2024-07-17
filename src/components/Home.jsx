@@ -107,6 +107,7 @@ const Home = () => {
       const userInfo = cleanData.filter((data) => {
         return data.username === user?.username;
       });
+
       dispatch({ type: GET_USER_TWEETS, payload: { userInfo } });
     } catch (error) {
       console.error(error);

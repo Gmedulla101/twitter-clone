@@ -86,6 +86,7 @@ const Tweet = ({ poster, post, tweetImages, id, comments, likes, docId }) => {
               comments={comments}
               setCommentOpen={setCommentOpen}
               tweetId={docId}
+              id={id}
             />,
             document.querySelector('#root')
           )}

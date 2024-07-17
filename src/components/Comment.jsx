@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //MAIN COMPONENT BODY
-const Comment = ({ comments, setCommentOpen, tweetId }) => {
+const Comment = ({ comments, setCommentOpen, tweetId, id }) => {
   const { user } = useGlobalContext();
 
   const [commentText, setCommentText] = useState('');
@@ -26,10 +26,31 @@ const Comment = ({ comments, setCommentOpen, tweetId }) => {
           poster: user.username,
         },
       ];
+
       const commentDoc = doc(db, 'tweets', tweetId);
-      const userCommentDoc = doc(db, 'users', user.id);
       await updateDoc(commentDoc, { comments: newCommentArray });
-      await updateDoc(userCommentDoc, { comments: newCommentArray });
+
+      const userCommentDoc = doc(db, 'users', user.id);
+      const { userTweets, userName } = user;
+
+      const newUserTweets = userTweets.map((userTweet) => {
+        if (userTweet.id === id) {
+          return {
+            ...userTweet,
+            comments: [
+              ...userTweet.comments,
+              {
+                post: commentText,
+                poster: userName,
+              },
+            ],
+          };
+        } else {
+          return userTweet;
+        }
+      });
+
+      await updateDoc(userCommentDoc, { userTweets: newUserTweets });
       setCommentText('');
       setCommentOpen(false);
       console.log('Comment submitted!!');
