@@ -15,7 +15,12 @@ const userCollectionRef = collection(db, 'users');
 import Logo from './Logo';
 import logo from '../images/twitter.png';
 
-const CreateAccount = () => {
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//MAIN COMPONENT BODY
+
+const SignIn = () => {
   const [signInData, setSignInData] = useState({
     email: '',
     password: '',
@@ -121,4 +126,4 @@ const CreateAccount = () => {
   );
 };
 
-export default CreateAccount;
+export default SignIn;

@@ -11,15 +11,17 @@ import Comment from './components/Comment';
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/sign-up" element={<SignUp />} />
-      <Route path="/sign-in" element={<SignIn />} />
-      <Route path="/create-account" element={<CreateAccount />} />
-      <Route path="/user-profile" element={<Profile />} />
-      <Route path="/edit-profile" element={<EditProfile />} />
-      <Route path="/comments" element={<Comment />} />
-    </Routes>
+    <div className="lg:w-[80%] lg:mx-auto">
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/create-account" element={<CreateAccount />} />
+        <Route path="/user-profile" element={<Profile />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/comments" element={<Comment />} />
+      </Routes>
+    </div>
   );
 };
 export default App;

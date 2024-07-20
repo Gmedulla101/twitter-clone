@@ -4,9 +4,11 @@ import { useGlobalContext } from '../context';
 import { db } from '../config/firebase';
 import { useNavigate } from 'react-router-dom';
 
-//IMPORTING HELPER COMPONENTS
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const Comment = ({ comments, setCommentOpen, tweetId }) => {
+//MAIN COMPONENT BODY
+const Comment = ({ comments, setCommentOpen, tweetId, id }) => {
   const { user } = useGlobalContext();
 
   const [commentText, setCommentText] = useState('');
@@ -24,21 +26,44 @@ const Comment = ({ comments, setCommentOpen, tweetId }) => {
           poster: user.username,
         },
       ];
+
       const commentDoc = doc(db, 'tweets', tweetId);
-      const userCommentDoc = doc(db, 'users', user.id);
       await updateDoc(commentDoc, { comments: newCommentArray });
-      await updateDoc(userCommentDoc, { comments: newCommentArray });
+
+      const userCommentDoc = doc(db, 'users', user.id);
+      const { userTweets, userName } = user;
+
+      const newUserTweets = userTweets.map((userTweet) => {
+        if (userTweet.id === id) {
+          return {
+            ...userTweet,
+            comments: [
+              ...userTweet.comments,
+              {
+                post: commentText,
+                poster: userName,
+              },
+            ],
+          };
+        } else {
+          return userTweet;
+        }
+      });
+
+      await updateDoc(userCommentDoc, { userTweets: newUserTweets });
       setCommentText('');
-      navigate('/');
+      setCommentOpen(false);
       console.log('Comment submitted!!');
+      navigate(0);
+      navigate('/');
     } catch (error) {
       console.error(error);
     }
   };
 
-  const commentEl = comments?.map((comment) => {
+  const commentEl = comments?.map((comment, i) => {
     return (
-      <article className="border-2 border-slate-200 p-3 shadow-lg">
+      <article className="border-2 border-slate-200 p-3" key={i}>
         <h2 className="poster font-bold">{comment?.poster}</h2>
         <p className="mb-4">{comment?.post}</p>
       </article>
@@ -73,13 +98,7 @@ const Comment = ({ comments, setCommentOpen, tweetId }) => {
       </section>
 
       {/* THE COMMENTS */}
-      <section>
-        <article className="border-2 border-slate-200 p-3 shadow-lg">
-          <h2 className="poster font-bold">MothersMilk</h2>
-          <p className="mb-4">Nor go commit anything o</p>
-          {commentEl}
-        </article>
-      </section>
+      <section>{commentEl}</section>
     </div>
   );
 };

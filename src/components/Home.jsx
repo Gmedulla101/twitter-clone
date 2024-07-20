@@ -8,6 +8,7 @@ import Tweet from './Tweet';
 import SideBar from './SideBar';
 import cameraImg from '../images/camera.png';
 import cancel from '../images/reject.png';
+import Logo from './Logo';
 
 //IMPORTING CUSTOM HOOKS
 import { useGlobalContext } from '../context';
@@ -50,9 +51,19 @@ const defaultState = {
   tweetImages: [],
 };
 
-/* MAIN COMPONENT BODY */
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//MAIN COMPONENT BODY
 
 const Home = () => {
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('user'));
+    setUser(userData);
+    getTweets();
+    getUserTweets();
+    getTweetImages();
+  }, []);
   //GLOBAL CONTEXT VARIABLES
   const { isSignedIn, setIsSignedIn, user, setUser } = useGlobalContext();
 
@@ -71,8 +82,10 @@ const Home = () => {
         return {
           ...doc.data(),
           id: doc._document.data.value.mapValue.fields.id.stringValue,
+          docId: doc.id,
         };
       });
+
       dispatch({ type: GET_TWEETS, payload: { cleanData } });
 
       dispatch({ type: STOP_LOADING });
@@ -95,6 +108,7 @@ const Home = () => {
       const userInfo = cleanData.filter((data) => {
         return data.username === user?.username;
       });
+
       dispatch({ type: GET_USER_TWEETS, payload: { userInfo } });
     } catch (error) {
       console.error(error);
@@ -113,14 +127,6 @@ const Home = () => {
     });
   };
 
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user'));
-    setUser(userData);
-    getTweets();
-    getUserTweets();
-    getTweetImages();
-  }, []);
-
   //SETTING THE TWEETS (USER AND DEFAULT) TO BE DISPLAYED
   const tweetsEl = tweets?.map((tweet) => {
     return (
@@ -129,6 +135,7 @@ const Home = () => {
         post={tweet.post}
         key={tweet.id}
         id={tweet.id}
+        docId={tweet.docId}
         likes={tweet.likes}
         comments={tweet.comments}
         tweetImages={tweetImages}
@@ -294,7 +301,10 @@ const Home = () => {
       <SideBar />
 
       {/* MAIN BODY SECTION */}
-      <div id="home" className="main-scroll ml-12 border-2 border-slate-200">
+      <div
+        id="home"
+        className="main-scroll ml-12 border-2 border-slate-200 md:ml-64 bg-white"
+      >
         <h1 className="text-2xl font-bold px-2 py-2 relative"> Home </h1>
 
         <div className="py-3 border-2 border-slate-200">

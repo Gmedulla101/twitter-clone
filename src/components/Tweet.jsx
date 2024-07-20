@@ -15,10 +15,12 @@ import likeBtn from '../images/like.png';
 //IMPORTING HELPER MODULES
 import { useGlobalContext } from '../context';
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const Tweet = ({ poster, post, tweetImages, id, comments, likes }) => {
+//MAIN COMPONENT BODY
+
+const Tweet = ({ poster, post, tweetImages, id, comments, likes, docId }) => {
   const { user } = useGlobalContext();
 
   const [commentOpen, setCommentOpen] = useState(false);
@@ -83,7 +85,8 @@ const Tweet = ({ poster, post, tweetImages, id, comments, likes }) => {
             <Comment
               comments={comments}
               setCommentOpen={setCommentOpen}
-              tweetId={id}
+              tweetId={docId}
+              id={id}
             />,
             document.querySelector('#root')
           )}
