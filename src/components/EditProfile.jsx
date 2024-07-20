@@ -6,6 +6,8 @@ import userPhoto from '../images/user.png';
 //IMPORTING FIREBASE DEPENDENCIES
 import { auth, db } from '../config/firebase';
 import { updateDoc, doc } from 'firebase/firestore';
+import { ref, uploadBytes } from 'firebase/storage';
+import { storage } from '../config/firebase';
 
 //IMPORTING REACT ROUTER NAVIGATE
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +22,6 @@ import { useGlobalContext } from '../context';
 
 const EditProfile = () => {
   const { user, isSignedIn, setUser, setIsSignedIn } = useGlobalContext();
-  console.log(user);
 
   //IMAGE FUNCTIONALITY
 
@@ -31,6 +32,7 @@ const EditProfile = () => {
   const [coverDisplay, setCoverDisplay] = useState();
   const [profilePicDisplay, setProfilePicDisplay] = useState();
 
+  //LOGIC FOR THE IMAGE CHANGE AND IMAGE DISPLAY
   const imageChange = (event) => {
     const { files, id } = event.target;
     const imageUrl = URL.createObjectURL(files[0]);
@@ -58,10 +60,33 @@ const EditProfile = () => {
     });
   };
 
-  console.log(profileDetails);
-
   //UPDATING FUNCTIONALITY
   const navigate = useNavigate();
+
+  const updatePhotos = async () => {
+    if (!photo.coverPhoto || !photo.profilePic) {
+      alert('Please add photographs to your profile edit!');
+    } else {
+      const profilePicFolderRef = ref(
+        storage,
+        `user-images/${user.username}/profilePic/${photo.profilePic.name}`
+      );
+      const coverPhtotFolderRef = ref(
+        storage,
+        `user-images/${user.username}/coverPhoto/${photo.coverPhoto.name}`
+      );
+      try {
+        await uploadBytes(profilePicFolderRef, photo.profilePic);
+        await uploadBytes(coverPhtotFolderRef, photo.coverPhoto);
+        console.log('Subkkitted!');
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  console.log(user);
+
   const saveEdit = async () => {
     const userDoc = doc(db, 'users', user.id);
     try {
@@ -73,6 +98,10 @@ const EditProfile = () => {
       await updateDoc(userDoc, { bio: profileDetails.bio });
       const newUserData = { ...user, bio: profileDetails.bio };
       localStorage.setItem('user', JSON.stringify(newUserData));
+
+      updatePhotos();
+      console.log('okay!!!!!!!');
+
       navigate('/user-profile');
     } catch (error) {
       console.error(error);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 //IMPORTING RELEVANT COMPONENTS
 import SideBar from './SideBar';
-import cover from '../images/cover.jpg';
+import cover from '../images/default-image.png';
 import userPhoto from '../images/user.png';
 
 //IMPORTING FIREBASE DEPENDENCIES
@@ -71,7 +71,7 @@ const Profile = () => {
           </Link>
         </h1>
       ) : (
-        <section className="ml-12">
+        <section className="ml-12 bg-white md:ml-64">
           <section className=" h-full">
             <span className="flex justify-between p-2">
               <h1 className="text-2xl font-bold px-2 py-2"> Profile </h1>
@@ -88,7 +88,7 @@ const Profile = () => {
               className="h-60 bg-slate-200 flex justify-center items-center gap-4 text-2xl font-bold relative"
               onClick={editCoverPhoto}
             >
-              <img src={cover} alt="" className="w-full h-full" />
+              <img src={cover} alt="" className="w-[50%] h-full" />
             </div>
 
             <div className="bg-white border-4 border-blue-400 w-20 h-20 p-1 rounded-full relative top-[-40px] ml-6 overflow-hidden">

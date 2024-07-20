@@ -7,7 +7,6 @@ export default {
         ssm: '20rem',
       },
       screens: {
-        sssm: '400px',
         xsm: '500px',
       },
       height: {

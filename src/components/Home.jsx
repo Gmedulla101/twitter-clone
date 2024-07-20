@@ -8,6 +8,7 @@ import Tweet from './Tweet';
 import SideBar from './SideBar';
 import cameraImg from '../images/camera.png';
 import cancel from '../images/reject.png';
+import Logo from './Logo';
 
 //IMPORTING CUSTOM HOOKS
 import { useGlobalContext } from '../context';
@@ -300,7 +301,10 @@ const Home = () => {
       <SideBar />
 
       {/* MAIN BODY SECTION */}
-      <div id="home" className="main-scroll ml-12 border-2 border-slate-200">
+      <div
+        id="home"
+        className="main-scroll ml-12 border-2 border-slate-200 md:ml-64 bg-white"
+      >
         <h1 className="text-2xl font-bold px-2 py-2 relative"> Home </h1>
 
         <div className="py-3 border-2 border-slate-200">

@@ -29,19 +29,21 @@ export default function SideBar() {
     <aside
       className={`border-2 border-slate-200 ${
         isOpen ? 'w-12' : 'w-[3em]'
-      } h-full fixed w-96 bg-white z-[100] overflow-hidden transition`}
+      } h-full fixed w-96 bg-white z-[100] overflow-hidden transition-all duration-300 md:overflow-visible md:w-64 md:bg-white`}
     >
       <button
         onClick={() => {
           setIsOpen(!isOpen);
         }}
-        className="ml-2 mt-3 w-8"
+        className="ml-2 mt-3 w-8 md:hidden"
       >
         <img src={isOpen ? close : burgerBtn} alt="" className="w-full" />
       </button>
 
       <div
-        className={`${isOpen ? 'flex' : 'hidden'} flex-col gap-12 mt-12 p-5`}
+        className={`${
+          isOpen ? 'flex' : 'hidden'
+        } flex-col gap-12 mt-12 p-5 md:flex`}
       >
         <Link to={'/'} className="flex items-center">
           <img
@@ -69,7 +71,7 @@ export default function SideBar() {
           />
           <p className="text-2xl font-bold">Profile</p>
         </Link>{' '}
-        <Link to={'/'}>
+        <Link to={'/'} className="block mx-auto">
           <img
             src={newTweetBtn}
             alt=""
