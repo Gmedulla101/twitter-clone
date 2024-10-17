@@ -53,6 +53,8 @@ const SignUp = () => {
     }
   };
 
+  
+
   return (
     <>
       <div className="p-10 lg:flex justify-between items-center xl:px-20 2xl:px-40">

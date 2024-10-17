@@ -58,8 +58,8 @@ const defaultState = {
 
 const Home = () => {
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user'));
-    setUser(userData);
+    const userToken = JSON.parse(localStorage.getItem('userToken'));
+    setUser(userToken);
     getTweets();
     getUserTweets();
     getTweetImages();
@@ -193,11 +193,8 @@ const Home = () => {
     try {
       await addDoc(tweetCollectionRef, {
         post: textareaContent,
-        poster: user?.username,
-        userId: auth?.currentUser?.uid,
         comments: [],
         likes: 0,
-        id: tweetId,
       });
 
       //ADDING THE INPUTTED TWEET TO THE USERS' USER TWEET FIELD.
