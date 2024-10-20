@@ -11,7 +11,7 @@ import Comment from './components/Comment';
 
 const App = () => {
   return (
-    <div className="lg:w-[80%] lg:mx-auto border-2 border-red-400 re">
+    <div className="lg:w-[80%] lg:mx-auto">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/sign-up" element={<SignUp />} />
