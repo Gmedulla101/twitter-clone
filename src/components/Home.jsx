@@ -61,6 +61,13 @@ const defaultState = {
 const Home = () => {
   useEffect(() => {
     const userToken = JSON.parse(localStorage.getItem('userToken'));
+    const username = JSON.parse(localStorage.getItem('username'));
+    if (userToken) {
+      setIsSignedIn(true);
+    }
+    if (username) {
+      setUser(username);
+    }
     getTweets();
     getUserTweets();
     getTweetImages();
