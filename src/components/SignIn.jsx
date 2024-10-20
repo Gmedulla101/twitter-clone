@@ -38,7 +38,7 @@ const SignIn = () => {
   const handleSubmit = async () => {
     try {
       const data = await axios.post(
-        'http://localhost:5000/api/v1/auth/login',
+        'https://twitter-backend-s1nc.onrender.com/api/v1/auth/login',
         signInData
       );
       setIsSignedIn(true);

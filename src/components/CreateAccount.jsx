@@ -47,13 +47,13 @@ const CreateAccount = () => {
   const handleSubmit = async () => {
     try {
       const data = await axios.post(
-        'http://localhost:5000/api/v1/auth/register',
+        'https://twitter-backend-s1nc.onrender.com/api/v1/auth/register',
         signUpData
       );
       console.log(data);
       setIsSignedIn(true);
       localStorage.setItem('userToken', JSON.stringify(data.data.token));
-      localStorage.setItem('username', JSON.stringify(data.data.username))
+      localStorage.setItem('username', JSON.stringify(data.data.username));
       navigate('/');
     } catch (err) {
       console.log(err);
