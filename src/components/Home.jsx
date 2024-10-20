@@ -9,7 +9,6 @@ import SideBar from './SideBar';
 import cameraImg from '../images/camera.png';
 import cancel from '../images/reject.png';
 import SignInbar from './SignInbar';
-import Logo from './Logo';
 import LoaderComponent from './LoaderComponent';
 
 //IMPORTING CUSTOM HOOKS
@@ -38,6 +37,7 @@ import {
   SET_POST_ERROR_FALSE,
   STOP_LOADING,
   GET_USER_TWEETS,
+  START_LOADING,
 } from '../modules/actions';
 
 //IMPORTING REDUCER FUNCTION
@@ -53,25 +53,33 @@ const defaultState = {
   tweetImages: [],
 };
 
+import axios from 'axios';
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //MAIN COMPONENT BODY
 
 const Home = () => {
+  //ENSURING THAT THE LOG IN STATUS IS REGISTERED BY THE APP.
   useEffect(() => {
     const userToken = JSON.parse(localStorage.getItem('userToken'));
     const username = JSON.parse(localStorage.getItem('username'));
     if (userToken) {
       setIsSignedIn(true);
+    } else {
+      setIsSignedIn(false);
     }
     if (username) {
       setUser(username);
+    } else {
+      setUser('');
     }
     getTweets();
     getUserTweets();
     getTweetImages();
   }, []);
+
   //GLOBAL CONTEXT VARIABLES
   const { isSignedIn, setIsSignedIn, user, setUser } = useGlobalContext();
 
@@ -123,6 +131,7 @@ const Home = () => {
     }
   };
 
+  //FUNCTIONALITY FOR GETTING TWEET IMAGES
   const getTweetImages = async () => {
     const tweetImageRef = ref(storage, 'tweetImages/');
 
@@ -167,6 +176,7 @@ const Home = () => {
 
   //ONCHANGE HANDLER FOR POST TEXT AREA
   const [textareaContent, setTextAreaContent] = useState('');
+  const [image, setImage] = useState([]);
   const textChange = (e) => {
     setTextAreaContent(e.target.value);
   };
@@ -175,6 +185,7 @@ const Home = () => {
   const tweetId = v4();
 
   //CREATE POST FUNCTIONALITY
+
   const createPost = async () => {
     //TACKLING EDGE CASES AND PROGRAMMATIC INCONSISTENCIES
     if (!user) {
@@ -188,47 +199,76 @@ const Home = () => {
       alert('Post field is empty, please type in a post');
       return;
     }
-    if (!auth.currentUser) {
-      dispatch({ type: SET_POST_ERROR_TRUE });
-      return;
-    }
 
     //MAIN FUNCTIONALITY
-    if (file) {
-      uploadImage();
-    }
-    const tweetCollectionRef = collection(db, 'tweets');
-    try {
-      await addDoc(tweetCollectionRef, {
-        post: textareaContent,
-        comments: [],
-        likes: 0,
-      });
+    if (image) {
+      try {
+        dispatch({ type: START_LOADING });
+        await uploadImage();
+        const postObject = {
+          post: textareaContent,
+          poster: user,
+          postImg: image,
+          likes: 0,
+          comments: [],
+        };
 
-      //ADDING THE INPUTTED TWEET TO THE USERS' USER TWEET FIELD.
-      if (user) {
-        const newUserTweetArray = [
-          ...user.userTweets,
+        const storedToken = localStorage.getItem('userToken');
+        if (!storedToken) {
+          throw new Error('You must sign in to make a post!');
+        }
+
+        const token = JSON.parse(storedToken);
+
+        const data = axios.post(
+          'http://localhost:5000/api/v1/posts/create-post',
+          postObject,
           {
-            post: textareaContent,
-            poster: user.username,
-            id: tweetId,
-            comments: [],
-            likes: 0,
-            userId: auth?.currentUser?.uid,
-          },
-        ];
-        const userTweetDoc = doc(db, 'users', user.id);
-        await updateDoc(userTweetDoc, { userTweets: newUserTweetArray });
-        getUserTweets();
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        dispatch({ type: STOP_LOADING });
+      } catch (error) {
+        dispatch({ type: STOP_LOADING });
+        console.log(error);
       }
+    } else {
+      try {
+        dispatch({ type: START_LOADING });
+        const postObject = {
+          post: textareaContent,
+          poster: user,
+          likes: 0,
+          comments: [],
+        };
 
-      getTweetImages();
-      getTweets();
-      setTextAreaContent('');
-    } catch (error) {
-      console.error(error);
+        const storedToken = localStorage.getItem('userToken');
+        if (!storedToken) {
+          throw new Error('You must sign in to make a post!');
+        }
+
+        const token = JSON.parse(storedToken);
+
+        const data = axios.post(
+          'http://localhost:5000/api/v1/posts/create-post',
+          postObject,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        dispatch({ type: STOP_LOADING });
+      } catch (error) {
+        dispatch({ type: STOP_LOADING });
+        console.log(error);
+      }
     }
+
+    setImage([]);
+    setTextAreaContent('');
   };
 
   //ONCHANGE FOR IMAGE POST
@@ -272,7 +312,7 @@ const Home = () => {
   };
 
   //FUNCTIONALITY FOR IMAGE UPLOAD
-  const uploadImage = () => {
+  const uploadImage = async () => {
     if (file === null) {
       return;
     }
@@ -281,11 +321,10 @@ const Home = () => {
       storage,
       `tweetImages/${file.name + `___${tweetId}`}`
     );
-    uploadBytes(tweetImgRef, file).then(() => {
-      setFile(null);
-      setImageDislay(null);
-      console.log('Image submitted');
-      getTweetImages();
+    const snapShot = uploadBytes(tweetImgRef, file);
+    const imageUrl = await getDownloadURL((await snapShot).ref);
+    setImage((prev) => {
+      return [...prev, imageUrl];
     });
   };
 
