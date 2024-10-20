@@ -2,23 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../context';
 
-//IMPORTING AUTHENTICATION DEPENDENCIES
-import { auth } from '../config/firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { db } from '../config/firebase';
-
-//IMPORTING FIREBASE FIRESTORE DEPENDENCIES
-import { collection, getDocs, addDoc } from 'firebase/firestore';
-
-//IMPORTING FIREBASE STORAGE DEPENDENCIES
-import { storage } from '../config/firebase';
-import { ref, uploadBytes } from 'firebase/storage';
-import { v4 } from 'uuid';
+//IMPORTING DEPS
+import axios from 'axios';
 
 //IMPORTING RELEVANT COMPONENTS
 import Logo from './Logo';
 import logo from '../images/twitter.png';
-import defaultAvatar from '../images/user.png';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,8 +15,6 @@ import defaultAvatar from '../images/user.png';
 //MAIN COMPONENT BODY
 
 const CreateAccount = () => {
-  const userRef = v4();
-
   const [signUpData, setSignUpData] = useState({
     email: '',
     password: '',
@@ -35,9 +22,10 @@ const CreateAccount = () => {
     firstName: '',
     lastName: '',
     otherNames: '',
-    bio: '',
-    userRef: userRef,
   });
+  const [errorMessage, setErrorMessage] = useState('');
+
+  console.log(signUpData);
 
   //UTILISING GLOBAL CONTEXT CUSTOM HOOK
   const { isSignedIn, setIsSignedIn, user, setUser } = useGlobalContext();
@@ -55,53 +43,22 @@ const CreateAccount = () => {
     });
   };
 
-  const [errorMessage, setErrorMessage] = useState('');
-
   /* LOGIC FOR PROFILE CREATION */
   const handleSubmit = async () => {
     try {
-      await createUserWithEmailAndPassword(
-        auth,
-        signUpData.email,
-        signUpData.password
+      const data = await axios.post(
+        'https://twitter-backend-s1nc.onrender.com/api/v1/auth/register',
+        signUpData
       );
+      console.log(data);
       setIsSignedIn(true);
-
-      const userCollectionRef = collection(db, 'users');
-
-      await addDoc(userCollectionRef, {
-        bio: signUpData.bio,
-        email: signUpData.email,
-        username: signUpData.username,
-        firstName: signUpData.firstName,
-        lastName: signUpData.lastName,
-        otherNames: signUpData.otherNames,
-        userTweets: [],
-      });
-
-      const userData = {
-        bio: signUpData.bio,
-        email: signUpData.email,
-        username: signUpData.username,
-        firstName: signUpData.firstName,
-        lastName: signUpData.lastName,
-        otherNames: signUpData.otherNames,
-        userTweets: [],
-      };
-
-      localStorage.setItem('user', JSON.stringify(userData));
-
-      setUser(JSON.parse(localStorage.getItem('user')));
-
-      console.log('Submitted!');
-    } catch (error) {
-      if (error.code === 'auth/email-already-in-use') {
-        setErrorMessage('Email already exists');
-        return;
-      }
-      console.error(error);
+      localStorage.setItem('userToken', JSON.stringify(data.data.token));
+      localStorage.setItem('username', JSON.stringify(data.data.username));
+      navigate('/');
+    } catch (err) {
+      console.log(err);
+      setErrorMessage(err.response.data.msg);
     }
-    navigate('/');
   };
 
   return (
@@ -163,16 +120,6 @@ const CreateAccount = () => {
 
         <input
           type="text"
-          placeholder="Enter your desired bio"
-          required
-          name="bio"
-          value={signUpData.bio}
-          onChange={handleChange}
-          className="border-2 border-slate-600 p-2 rounded-lg outline-none my-2 focus:border-blue-500 sm:w-80"
-        />
-
-        <input
-          type="text"
           placeholder="Password..."
           name="password"
           value={signUpData.password}
@@ -180,11 +127,11 @@ const CreateAccount = () => {
           className="border-2 border-slate-600 p-2 rounded-lg outline-none focus:border-blue-500 my-2 sm:w-80"
         />
 
-        <h3> {errorMessage} </h3>
+        <h3 className="text-red-600 font-semibold w-full"> {errorMessage} </h3>
 
         <button
           onClick={handleSubmit}
-          className="px-16 py-3 bg-blue-500 text-white rounded-3xl flex mx-auto mt-5 w-ssm justify-center font-bold hover:bg-blue-600 active:bg-blue-700 sm:w-96 "
+          className="px-16 py-3 bg-blue-500 text-white rounded-3xl flex mx-auto mt-5 justify-center font-bold hover:bg-blue-600 active:bg-blue-700 sm:w-96 "
         >
           Create account
         </button>

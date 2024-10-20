@@ -71,19 +71,19 @@ const Comment = ({ comments, setCommentOpen, tweetId, id }) => {
   });
 
   return (
-    <div className="p-2 bg-white fixed w-full h-full top-0">
+    <div className="py-2 bg-white fixed w-full h-full top-0">
       <div>
         <button
           onClick={() => {
             setCommentOpen(false);
           }}
-          className="px-16 py-3 bg-blue-500 text-white text-lg rounded-3xl flex w-12 justify-center font-bold hover:bg-blue-600 active:bg-blue-700 lg:w-12"
+          className="px-16 py-3 ml-2 bg-blue-500 text-white text-lg rounded-3xl flex w-12 justify-center font-bold hover:bg-blue-600 active:bg-blue-700 lg:w-12"
         >
           Back
         </button>
       </div>
       {/* TEXT AREA FOR ADDING A NEW COMMENT */}
-      <section className="mb-12">
+      <section className="mb-12 shadow border-2 border-red-400">
         <textarea
           value={commentText}
           onChange={handleChange}
@@ -91,7 +91,7 @@ const Comment = ({ comments, setCommentOpen, tweetId, id }) => {
         ></textarea>
         <button
           onClick={sendComment}
-          className="px-16 py-3 bg-blue-500 text-white text-lg rounded-3xl flex w-12 justify-center font-bold hover:bg-blue-600 active:bg-blue-700 lg:w-12 mx-auto"
+          className="px-16 py-3 bg-blue-500 text-white text-lg rounded-3xl flex w-12 justify-center font-bold hover:bg-blue-600 active:bg-blue-700 lg:w-12"
         >
           Reply
         </button>

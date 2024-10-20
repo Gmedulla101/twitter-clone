@@ -8,7 +8,9 @@ import Tweet from './Tweet';
 import SideBar from './SideBar';
 import cameraImg from '../images/camera.png';
 import cancel from '../images/reject.png';
+import SignInbar from './SignInbar';
 import Logo from './Logo';
+import LoaderComponent from './LoaderComponent';
 
 //IMPORTING CUSTOM HOOKS
 import { useGlobalContext } from '../context';
@@ -58,8 +60,7 @@ const defaultState = {
 
 const Home = () => {
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user'));
-    setUser(userData);
+    const userToken = JSON.parse(localStorage.getItem('userToken'));
     getTweets();
     getUserTweets();
     getTweetImages();
@@ -193,11 +194,8 @@ const Home = () => {
     try {
       await addDoc(tweetCollectionRef, {
         post: textareaContent,
-        poster: user?.username,
-        userId: auth?.currentUser?.uid,
         comments: [],
         likes: 0,
-        id: tweetId,
       });
 
       //ADDING THE INPUTTED TWEET TO THE USERS' USER TWEET FIELD.
@@ -310,9 +308,7 @@ const Home = () => {
         <div className="py-3 border-2 border-slate-200">
           <textarea
             placeholder={
-              user?.username
-                ? `Whats happening ${user?.username}!!!`
-                : "What's happening people!!!"
+              user ? `Whats happening ${user}!!!` : "What's happening people!!!"
             }
             name="post"
             value={textareaContent}
@@ -389,23 +385,17 @@ const Home = () => {
           </button>
         </div>
         {homeState ? (
-          <section className="tweets mt-7">
-            {isLoading ? (
-              <h2 className="text-center font-bold text-xl my-10">
-                {' '}
-                Loading...{' '}
-              </h2>
-            ) : (
-              tweetsEl
-            )}
+          <section className="tweets relative">
+            {/* CONDITIONAL SIGN IN BAR */}
+            {user ? '' : <SignInbar />}
+            {isLoading ? <LoaderComponent /> : tweetsEl}
           </section>
         ) : (
-          <section className="tweets mt-7">
+          <section className="tweets">
+            {/* CONDITIONAL SIGN IN BAR */}
+            {user ? '' : <SignInbar />}
             {isLoading ? (
-              <h2 className="text-center font-bold text-xl my-10">
-                {' '}
-                Loading...{' '}
-              </h2>
+              <LoaderComponent />
             ) : userTweetsEl ? (
               userTweetsEl
             ) : (
@@ -417,35 +407,6 @@ const Home = () => {
           </section>
         )}
       </div>
-
-      {/* CONDITIONAL SIGN IN BAR */}
-      {user ? (
-        ''
-      ) : (
-        <div className="signInBar h-18 bg-blue-500 fixed w-full top-[90%] text-white flex justify-between items-center px-6">
-          <div className="ssm: hidden sm:block">
-            <h3 className="font-bold"> Don't miss what's happening </h3>
-            <p> The people on X are the first to know </p>
-          </div>
-
-          <div className="flex justify-around p-4 ssm: w-full sm:w-1/3 sm:gap-2 xl:w-1/4">
-            <Link to={'/sign-in'}>
-              {' '}
-              <button className="border-[1px] border-white rounded-3xl font-bold px-4 py-2 w-32 hover:bg-white hover:text-blue-500">
-                {' '}
-                Sign In{' '}
-              </button>{' '}
-            </Link>
-            <Link to={'/sign-up'}>
-              {' '}
-              <button className="bg-white text-black rounded-3xl px-4 py-2 font-bold hover:text-blue-500 w-32">
-                {' '}
-                Sign Up{' '}
-              </button>{' '}
-            </Link>
-          </div>
-        </div>
-      )}
     </>
   );
 };

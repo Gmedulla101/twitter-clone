@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useGlobalContext } from '../context';
-
-//IMPORTING AUTHENTICATION DEPENDENCIES
-import { auth } from '../config/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { db } from '../config/firebase';
-
-//IMPORTING FIREBASE FIRESTORE DEPENDENCIES
-import { doc, getDocs, collection } from 'firebase/firestore';
-const userCollectionRef = collection(db, 'users');
+import axios from 'axios';
 
 //IMPORTING RELEVANT COMPONENTS
 import Logo from './Logo';
@@ -45,32 +37,21 @@ const SignIn = () => {
 
   const handleSubmit = async () => {
     try {
-      await signInWithEmailAndPassword(
-        auth,
-        signInData.email,
-        signInData.password
+      const data = await axios.post(
+        'https://twitter-backend-s1nc.onrender.com/api/v1/auth/login',
+        signInData
       );
-
-      const data = await getDocs(userCollectionRef);
-      const cleanData = data.docs.map((doc) => {
-        return { ...doc.data(), id: doc.id };
-      });
-      const userData = cleanData.filter((data) => {
-        return data.email === signInData.email;
-      });
-      const user = userData[0];
-
-      localStorage.setItem('user', JSON.stringify(user));
-      setUser(JSON.parse(localStorage.getItem('user')));
       setIsSignedIn(true);
+      localStorage.setItem('userToken', JSON.stringify(data.data.token));
+      localStorage.setItem('username', JSON.stringify(data.data.username));
+      navigate('/');
     } catch (error) {
       if (error.code === 'auth/invalid-credential') {
-        setErrorMessage('Invalid log in credentials');
+        setErrorMessage(err.response.data.msg);
         return;
       }
       console.error(error);
     }
-    navigate('/');
   };
 
   return (
@@ -105,7 +86,7 @@ const SignIn = () => {
 
         <button
           onClick={handleSubmit}
-          className="outline-none px-16 py-3 bg-blue-500 text-white rounded-3xl flex mx-auto mt-5 w-ssm justify-center font-bold hover:bg-blue-600 active:bg-blue-700 sm:w-96 "
+          className="outline-none px-16 py-3 bg-blue-500 text-white rounded-3xl flex mx-auto mt-5 justify-center font-bold hover:bg-blue-600 active:bg-blue-700 sm:w-96 "
         >
           Sign in
         </button>
