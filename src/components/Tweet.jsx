@@ -5,9 +5,6 @@ import { createPortal } from 'react-dom';
 import Comment from './Comment';
 import SignIn from './SignIn';
 
-//IMPORTING REACT ROUTER DOM DEPENDENCIES
-import { Link } from 'react-router-dom';
-
 //IMPORTING IMAGE ASSETS
 import commentBtn from '../images/chat.png';
 import likeBtn from '../images/like.png';
@@ -88,7 +85,7 @@ const Tweet = ({ poster, post, tweetImages, id, comments, likes, docId }) => {
               tweetId={docId}
               id={id}
             />,
-            document.querySelector('#root')
+            document.querySelector('#home')
           )}
       </div>
     </article>
