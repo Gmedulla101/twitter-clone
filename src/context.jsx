@@ -10,8 +10,17 @@ export const useGlobalContext = () => {
 };
 
 const AppContext = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const storedToken = localStorage.getItem('userToken');
+  const storedUser = localStorage.getItem('username');
+
+  if (!storedToken || !storedUser) {
+    console.error('No user is logged in');
+  }
+  const userToken = JSON.parse(storedToken);
+  const username = JSON.parse(storedUser);
+
+  const [user, setUser] = useState(username || null);
+  const [isSignedIn, setIsSignedIn] = useState(userToken ? true : false);
 
   return (
     <GlobalContext.Provider

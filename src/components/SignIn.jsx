@@ -43,6 +43,7 @@ const SignIn = () => {
       );
       setIsSignedIn(true);
       localStorage.setItem('userToken', JSON.stringify(data.data.token));
+      localStorage.setItem('username', JSON.stringify(data.data.username));
       navigate('/');
     } catch (error) {
       if (error.code === 'auth/invalid-credential') {
