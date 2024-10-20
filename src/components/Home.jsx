@@ -10,6 +10,7 @@ import cameraImg from '../images/camera.png';
 import cancel from '../images/reject.png';
 import SignInbar from './SignInbar';
 import Logo from './Logo';
+import LoaderComponent from './LoaderComponent';
 
 //IMPORTING CUSTOM HOOKS
 import { useGlobalContext } from '../context';
@@ -60,7 +61,6 @@ const defaultState = {
 const Home = () => {
   useEffect(() => {
     const userToken = JSON.parse(localStorage.getItem('userToken'));
-    setUser(userToken);
     getTweets();
     getUserTweets();
     getTweetImages();
@@ -308,9 +308,7 @@ const Home = () => {
         <div className="py-3 border-2 border-slate-200">
           <textarea
             placeholder={
-              user?.username
-                ? `Whats happening ${user}!!!`
-                : "What's happening people!!!"
+              user ? `Whats happening ${user}!!!` : "What's happening people!!!"
             }
             name="post"
             value={textareaContent}
@@ -387,27 +385,17 @@ const Home = () => {
           </button>
         </div>
         {homeState ? (
-          <section className="tweets mt-7 relative">
+          <section className="tweets relative">
             {/* CONDITIONAL SIGN IN BAR */}
             {user ? '' : <SignInbar />}
-            {isLoading ? (
-              <h2 className="text-center font-bold text-xl my-10">
-                {' '}
-                Loading...{' '}
-              </h2>
-            ) : (
-              tweetsEl
-            )}
+            {isLoading ? <LoaderComponent /> : tweetsEl}
           </section>
         ) : (
-          <section className="tweets mt-7">
+          <section className="tweets">
             {/* CONDITIONAL SIGN IN BAR */}
             {user ? '' : <SignInbar />}
             {isLoading ? (
-              <h2 className="text-center font-bold text-xl my-10">
-                {' '}
-                Loading...{' '}
-              </h2>
+              <LoaderComponent />
             ) : userTweetsEl ? (
               userTweetsEl
             ) : (

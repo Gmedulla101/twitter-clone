@@ -1,5 +1,4 @@
 import { useState, useEffect, createContext, useContext } from 'react';
-import { json } from 'react-router-dom';
 
 const GlobalContext = createContext();
 
@@ -19,8 +18,8 @@ const AppContext = ({ children }) => {
   const userToken = JSON.parse(storedToken);
   const username = JSON.parse(storedUser);
 
-  const [user, setUser] = useState(username || null);
   const [isSignedIn, setIsSignedIn] = useState(userToken ? true : false);
+  const [user, setUser] = useState(username || null);
 
   return (
     <GlobalContext.Provider
