@@ -22,7 +22,7 @@ const reducer = (state, action) => {
     return { ...state, isLoading: true };
   }
   if (action.type === GET_USER_TWEETS) {
-    return { ...state, userTweets: action.payload.userInfo };
+    return { ...state, userTweets: action.payload.userTweets };
   }
   if (action.type === SET_ERROR_TRUE) {
     return { ...state, isError: true };

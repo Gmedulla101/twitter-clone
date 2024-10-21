@@ -132,9 +132,11 @@ const Home = () => {
           },
         }
       );
-      console.log(data);
 
-      dispatch({ type: GET_USER_TWEETS, payload: { userInfo } });
+      dispatch({
+        type: GET_USER_TWEETS,
+        payload: { userTweets: data.data.data },
+      });
     } catch (error) {
       console.error(error);
     }
@@ -156,16 +158,16 @@ const Home = () => {
     );
   });
 
-  const userTweetsEl = userTweets?.[0]?.userTweets?.map((userTweet) => {
+  const userTweetsEl = userTweets?.map((userTweet) => {
     return (
       <Tweet
         poster={userTweet?.poster}
         post={userTweet?.post}
-        key={userTweet?.id}
+        key={userTweet?._id}
         id={userTweet.id}
         likes={userTweet.likes}
         comments={userTweet.comments}
-        postImg={tweet.postImg}
+        postImg={userTweet.postImg}
       />
     );
   });
