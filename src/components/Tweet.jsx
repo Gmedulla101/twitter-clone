@@ -17,24 +17,10 @@ import { useGlobalContext } from '../context';
 
 //MAIN COMPONENT BODY
 
-const Tweet = ({ poster, post, tweetImages, id, comments, likes, docId }) => {
+const Tweet = ({ poster, post, postImg, id, comments, likes, docId }) => {
   const { user } = useGlobalContext();
 
   const [commentOpen, setCommentOpen] = useState(false);
-
-  //TWEET IMAGE LOGIC
-  const tweetImagesId = tweetImages?.map((tweetImage, i) => {
-    return {
-      imageUrl: tweetImage,
-      imageId: tweetImage.slice(
-        tweetImage.lastIndexOf('_') + 1,
-        tweetImage.lastIndexOf('?')
-      ),
-    };
-  });
-  const particularImage = tweetImagesId.filter((tweetImageId) => {
-    return tweetImageId.imageId === id;
-  });
 
   //TWEET COMMENT LOGIC
   const createComment = () => {
@@ -50,13 +36,9 @@ const Tweet = ({ poster, post, tweetImages, id, comments, likes, docId }) => {
     <article className="border-2 border-slate-200 p-3">
       <h2 className="poster font-bold"> {poster} </h2>
       <p className="mb-4">{post}</p>
-      {particularImage.length != 0 ? (
+      {postImg?.length > 0 ? (
         <div className="h-72 w-full rounded-xl overflow-hidden">
-          <img
-            src={particularImage[0]?.imageUrl}
-            alt=""
-            className="w-full h-full"
-          />
+          <img src={postImg[0]} alt="" className="w-full h-full" />
         </div>
       ) : (
         ''

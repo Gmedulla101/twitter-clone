@@ -77,7 +77,6 @@ const Home = () => {
     }
     getTweets();
     getUserTweets();
-    getTweetImages();
   }, []);
 
   //GLOBAL CONTEXT VARIABLES
@@ -90,19 +89,12 @@ const Home = () => {
 
   //FUNCTIONALTY FOR GETTING THE DEFAULT TWEETS FROM THE BACKEND
   const getTweets = async () => {
-    const tweetCollectionRef = collection(db, 'tweets');
     try {
-      const tweetsData = await getDocs(tweetCollectionRef);
+      const data = await axios.get(
+        'http://localhost:5000/api/v1/posts/get-posts'
+      );
 
-      const cleanData = tweetsData.docs.map((doc) => {
-        return {
-          ...doc.data(),
-          id: doc._document.data.value.mapValue.fields.id.stringValue,
-          docId: doc.id,
-        };
-      });
-
-      dispatch({ type: GET_TWEETS, payload: { cleanData } });
+      dispatch({ type: GET_TWEETS, payload: { cleanData: data.data.data } });
 
       dispatch({ type: STOP_LOADING });
     } catch (error) {
@@ -125,23 +117,27 @@ const Home = () => {
         return data.username === user?.username;
       });
 
+      const storedToken = localStorage.getItem('userToken');
+      if (!storedToken) {
+        throw new Error('You must sign in to make a post!');
+      }
+
+      const token = JSON.parse(storedToken);
+
+      const data = await axios.get(
+        'http://localhost:5000/api/v1/posts/get-user-posts',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(data);
+
       dispatch({ type: GET_USER_TWEETS, payload: { userInfo } });
     } catch (error) {
       console.error(error);
     }
-  };
-
-  //FUNCTIONALITY FOR GETTING TWEET IMAGES
-  const getTweetImages = async () => {
-    const tweetImageRef = ref(storage, 'tweetImages/');
-
-    listAll(tweetImageRef).then((response) => {
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          dispatch({ type: GET_TWEET_IMAGES, payload: { url } });
-        });
-      });
-    });
   };
 
   //SETTING THE TWEETS (USER AND DEFAULT) TO BE DISPLAYED
@@ -150,12 +146,12 @@ const Home = () => {
       <Tweet
         poster={tweet.poster}
         post={tweet.post}
-        key={tweet.id}
+        key={tweet._id}
         id={tweet.id}
         docId={tweet.docId}
         likes={tweet.likes}
         comments={tweet.comments}
-        tweetImages={tweetImages}
+        postImg={tweet.postImg}
       />
     );
   });
@@ -169,14 +165,14 @@ const Home = () => {
         id={userTweet.id}
         likes={userTweet.likes}
         comments={userTweet.comments}
-        tweetImages={tweetImages}
+        postImg={tweet.postImg}
       />
     );
   });
 
   //ONCHANGE HANDLER FOR POST TEXT AREA
   const [textareaContent, setTextAreaContent] = useState('');
-  const [image, setImage] = useState([]);
+
   const textChange = (e) => {
     setTextAreaContent(e.target.value);
   };
@@ -201,14 +197,15 @@ const Home = () => {
     }
 
     //MAIN FUNCTIONALITY
-    if (image) {
+    if (file) {
       try {
         dispatch({ type: START_LOADING });
-        await uploadImage();
+        const imageUrl = await uploadImage();
+
         const postObject = {
           post: textareaContent,
           poster: user,
-          postImg: image,
+          postImg: imageUrl,
           likes: 0,
           comments: [],
         };
@@ -229,6 +226,8 @@ const Home = () => {
             },
           }
         );
+        setFile(null);
+        setImageDislay(null);
         dispatch({ type: STOP_LOADING });
       } catch (error) {
         dispatch({ type: STOP_LOADING });
@@ -323,9 +322,7 @@ const Home = () => {
     );
     const snapShot = uploadBytes(tweetImgRef, file);
     const imageUrl = await getDownloadURL((await snapShot).ref);
-    setImage((prev) => {
-      return [...prev, imageUrl];
-    });
+    return imageUrl;
   };
 
   //FUNCTIONALITY FOR HOME PAGE STATE
