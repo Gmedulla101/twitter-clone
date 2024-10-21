@@ -91,7 +91,7 @@ const Home = () => {
   const getTweets = async () => {
     try {
       const data = await axios.get(
-        'http://localhost:5000/api/v1/posts/get-posts'
+        'https://twitter-backend-s1nc.onrender.com/api/v1/posts/get-posts'
       );
 
       dispatch({ type: GET_TWEETS, payload: { cleanData: data.data.data } });
@@ -125,7 +125,7 @@ const Home = () => {
       const token = JSON.parse(storedToken);
 
       const data = await axios.get(
-        'http://localhost:5000/api/v1/posts/get-user-posts',
+        'https://twitter-backend-s1nc.onrender.com/api/v1/posts/get-user-posts',
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -220,7 +220,7 @@ const Home = () => {
         const token = JSON.parse(storedToken);
 
         const data = axios.post(
-          'http://localhost:5000/api/v1/posts/create-post',
+          'https://twitter-backend-s1nc.onrender.com/api/v1/posts/create-post',
           postObject,
           {
             headers: {
@@ -253,7 +253,7 @@ const Home = () => {
         const token = JSON.parse(storedToken);
 
         const data = axios.post(
-          'http://localhost:5000/api/v1/posts/create-post',
+          'https://twitter-backend-s1nc.onrender.com/api/v1/posts/create-post',
           postObject,
           {
             headers: {
