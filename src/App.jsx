@@ -8,6 +8,9 @@ import CreateAccount from './components/CreateAccount';
 import Profile from './components/Profile';
 import EditProfile from './components/EditProfile';
 import Comment from './components/Comment';
+import Messaging from './components/Messaging';
+
+
 
 const App = () => {
   return (
@@ -20,6 +23,7 @@ const App = () => {
         <Route path="/user-profile" element={<Profile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/comments" element={<Comment />} />
+        <Route path="/messaging" element={<Messaging />} />
       </Routes>
     </div>
   );
