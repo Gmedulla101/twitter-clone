@@ -15,16 +15,8 @@ import LoaderComponent from '../components/LoaderComponent';
 import { useGlobalContext } from '../context';
 
 //IMPORTING FIREBASE DEPENDENCIES
-import {
-  getDocs,
-  addDoc,
-  collection,
-  updateDoc,
-  doc,
-} from 'firebase/firestore';
-import { auth, db, storage } from '../config/firebase';
-import { data } from 'autoprefixer';
-import { set } from 'firebase/database';
+import { storage } from '../config/firebase';
+
 import { ref, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
 
@@ -105,18 +97,7 @@ const Home = () => {
 
   //FUNCTIONALTY FOR GETTING THE USER TWEETS FROM THE BACKEND
   const getUserTweets = async () => {
-    const userTweetCollectionRef = collection(db, 'users');
-
     try {
-      const userTweetsData = await getDocs(userTweetCollectionRef);
-      const cleanData = userTweetsData.docs.map((doc) => {
-        return { ...doc.data(), id: doc.id };
-      });
-
-      const userInfo = cleanData.filter((data) => {
-        return data.username === user?.username;
-      });
-
       const storedToken = localStorage.getItem('userToken');
       if (!storedToken) {
         throw new Error('You must sign in to make a post!');
@@ -252,7 +233,7 @@ const Home = () => {
 
         const token = JSON.parse(storedToken);
 
-        const data = axios.post(
+        const data = await axios.post(
           'https://twitter-backend-s1nc.onrender.com/api/v1/posts/create-post',
           postObject,
           {
@@ -262,6 +243,7 @@ const Home = () => {
           }
         );
         dispatch({ type: STOP_LOADING });
+        window.location.reload();
       } catch (error) {
         dispatch({ type: STOP_LOADING });
         console.log(error);
@@ -447,12 +429,11 @@ const Home = () => {
             {user ? '' : <SignInbar />}
             {isLoading ? (
               <LoaderComponent />
-            ) : userTweetsEl ? (
+            ) : userTweets.length !== 0 ? (
               userTweetsEl
             ) : (
               <p className="font-bold text-2xl text-center mt-20">
-                {' '}
-                No tweets to show right now{' '}
+                No tweets to show right now
               </p>
             )}
           </section>
