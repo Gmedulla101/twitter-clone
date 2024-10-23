@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
 //IMPORTING RELEVANT COMPONENTS
-import SideBar from './SideBar';
+import SideBar from '../components/SideBar';
 import cover from '../images/default-image.png';
 import userPhoto from '../images/user.png';
-import LoaderComponent from './LoaderComponent';
+import LoaderComponent from '../components/LoaderComponent';
 
 //IMPORTING ROUTING DEPENDENCIES
 import { Link, useNavigate } from 'react-router-dom';

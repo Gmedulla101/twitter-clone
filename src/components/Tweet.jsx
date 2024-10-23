@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 
 //IMPORTING HELPER COMPONENTS
-import Comment from './Comment';
+import Comment from '../pages/Comment';
 import SignIn from './SignIn';
 
 //IMPORTING IMAGE ASSETS

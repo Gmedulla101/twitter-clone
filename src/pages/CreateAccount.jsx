@@ -6,7 +6,7 @@ import { useGlobalContext } from '../context';
 import axios from 'axios';
 
 //IMPORTING RELEVANT COMPONENTS
-import Logo from './Logo';
+import Logo from '../components/Logo';
 import logo from '../images/twitter.png';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

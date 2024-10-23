@@ -5,8 +5,8 @@ import io from 'socket.io-client';
 import { Link } from 'react-router-dom';
 
 //IMPORTING NEEDED DEPS
-import SideBar from './SideBar';
-import LoaderComponent from './LoaderComponent';
+import SideBar from '../components/SideBar';
+import LoaderComponent from '../components/LoaderComponent';
 
 //IMPORTING CONTEXT HOOK
 import { useGlobalContext } from '../context';

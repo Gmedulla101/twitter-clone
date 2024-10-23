@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SideBar from './SideBar';
+import SideBar from '../components/SideBar';
 import cameraImg from '../images/camera.png';
 import userPhoto from '../images/user.png';
 

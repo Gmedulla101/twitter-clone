@@ -4,12 +4,12 @@ import React, { useState, useEffect, useReducer } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 //IMPORTING RELEVANT COMPONENTS
-import Tweet from './Tweet';
-import SideBar from './SideBar';
+import Tweet from '../components/Tweet';
+import SideBar from '../components/SideBar';
 import cameraImg from '../images/camera.png';
 import cancel from '../images/reject.png';
-import SignInbar from './SignInbar';
-import LoaderComponent from './LoaderComponent';
+import SignInbar from '../components/SignInbar';
+import LoaderComponent from '../components/LoaderComponent';
 
 //IMPORTING CUSTOM HOOKS
 import { useGlobalContext } from '../context';
