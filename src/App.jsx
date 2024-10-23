@@ -23,7 +23,7 @@ const App = () => {
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/comments" element={<Comment />} />
         <Route path="/messaging" element={<Messaging />} />
-        <Route path="/user-profile/:id" element={<ProfileInfo />} />
+        <Route path="/user-profile/:username" element={<ProfileInfo />} />
       </Routes>
     </div>
   );

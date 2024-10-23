@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
+import { Link } from 'react-router-dom';
 
 //IMPORTING HELPER COMPONENTS
 import Comment from '../pages/Comment';
@@ -17,7 +18,7 @@ import { useGlobalContext } from '../context';
 
 //MAIN COMPONENT BODY
 
-const Tweet = ({ poster, post, postImg, id, comments, likes, docId }) => {
+const Tweet = ({ poster, post, postImg, id, comments, likes }) => {
   const { user } = useGlobalContext();
 
   const [commentOpen, setCommentOpen] = useState(false);
@@ -34,7 +35,11 @@ const Tweet = ({ poster, post, postImg, id, comments, likes, docId }) => {
 
   return (
     <article className="border-2 border-slate-200 p-3">
-      <h2 className="poster font-bold"> {poster} </h2>
+      <Link to={`/user-profile/${poster}`}>
+        {' '}
+        <h2 className="poster font-bold"> {poster} </h2>{' '}
+      </Link>
+
       <p className="mb-4">{post}</p>
       {postImg?.length > 0 ? (
         <div className="h-96 w-full rounded-xl overflow-hidden md:h-96 md:w-[60%] md:mx-auto">
@@ -64,7 +69,6 @@ const Tweet = ({ poster, post, postImg, id, comments, likes, docId }) => {
             <Comment
               comments={comments}
               setCommentOpen={setCommentOpen}
-              tweetId={docId}
               id={id}
             />,
             document.querySelector('#home')

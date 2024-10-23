@@ -149,7 +149,7 @@ const Home = () => {
         poster={tweet.poster}
         post={tweet.post}
         key={tweet._id}
-        id={tweet.id}
+        id={tweet._id}
         docId={tweet.docId}
         likes={tweet.likes}
         comments={tweet.comments}
@@ -164,7 +164,7 @@ const Home = () => {
         poster={userTweet?.poster}
         post={userTweet?.post}
         key={userTweet?._id}
-        id={userTweet.id}
+        id={userTweet._id}
         likes={userTweet.likes}
         comments={userTweet.comments}
         postImg={userTweet.postImg}
