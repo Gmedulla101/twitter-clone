@@ -37,7 +37,7 @@ const Tweet = ({ poster, post, postImg, id, comments, likes, docId }) => {
       <h2 className="poster font-bold"> {poster} </h2>
       <p className="mb-4">{post}</p>
       {postImg?.length > 0 ? (
-        <div className="h-72 w-full rounded-xl overflow-hidden">
+        <div className="h-96 w-full rounded-xl overflow-hidden md:h-96 md:w-[60%] md:mx-auto">
           <img src={postImg[0]} alt="" className="w-full h-full" />
         </div>
       ) : (

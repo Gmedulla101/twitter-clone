@@ -433,7 +433,13 @@ const Home = () => {
           <section className="tweets relative">
             {/* CONDITIONAL SIGN IN BAR */}
             {user ? '' : <SignInbar />}
-            {isLoading ? <LoaderComponent /> : tweetsEl}
+            {isLoading ? (
+              <div className="mt-12">
+                <LoaderComponent />{' '}
+              </div>
+            ) : (
+              tweetsEl
+            )}
           </section>
         ) : (
           <section className="tweets">

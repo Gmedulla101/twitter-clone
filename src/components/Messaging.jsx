@@ -12,7 +12,7 @@ import LoaderComponent from './LoaderComponent';
 import { useGlobalContext } from '../context';
 
 //INSTANTIATIING SOCKET CONNECTION
-const socket = io.connect('http://localhost:5000');
+/* const socket = io.connect('http://localhost:5000'); */
 
 const Messaging = () => {
   const { user } = useGlobalContext();

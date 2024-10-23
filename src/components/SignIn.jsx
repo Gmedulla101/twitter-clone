@@ -61,7 +61,9 @@ const SignIn = () => {
   return (
     <section>
       {isLoading ? (
-        <LoaderComponent />
+        <div className="mt-36">
+          <LoaderComponent />
+        </div>
       ) : (
         <div className="w-[90%] p-6 mx-auto my-9 rounded-lg sm:shadow-3xl sm:pt-2 sm:pb-4 lg:w-[80%] lg:py-9">
           <Logo logo={logo} />
