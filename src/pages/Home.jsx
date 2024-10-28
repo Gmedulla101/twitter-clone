@@ -386,7 +386,7 @@ const Home = () => {
           </p>
         </div>
 
-        <div className="home-page-toggle flex justify-around">
+        <div className="home-page-toggle flex  mb-4 justify-around">
           <button
             onClick={toggleToTweets}
             className="text-blue-500 font-bold text-lg hover:underline"

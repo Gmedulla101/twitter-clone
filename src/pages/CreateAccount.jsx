@@ -27,8 +27,6 @@ const CreateAccount = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(signUpData);
-
   //UTILISING GLOBAL CONTEXT CUSTOM HOOK
   const { isSignedIn, setIsSignedIn, user, setUser } = useGlobalContext();
 
@@ -68,7 +66,7 @@ const CreateAccount = () => {
   return (
     <div className="w-[90%] py-2 px-5 mx-auto my-9 rounded-lg sm:shadow-3xl sm:pt-2 sm:pb-4 lg:w-[80%] lg:py-9">
       {isLoading ? (
-        <div className="mt-36">
+        <div className="my-36">
           <LoaderComponent />
         </div>
       ) : (

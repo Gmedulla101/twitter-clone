@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-
 import axios from 'axios';
-import io from 'socket.io-client';
-import { Link } from 'react-router-dom';
+
+import { joinRoom } from '../custom hooks/useSocket';
+
+import { Link, useNavigate } from 'react-router-dom';
+import { v4 } from 'uuid';
 
 //IMPORTING NEEDED DEPS
 import SideBar from '../components/SideBar';
@@ -11,15 +13,18 @@ import LoaderComponent from '../components/LoaderComponent';
 //IMPORTING CONTEXT HOOK
 import { useGlobalContext } from '../context';
 
-//INSTANTIATIING SOCKET CONNECTION
-/* const socket = io.connect('http://localhost:5000'); */
-
 const Messaging = () => {
   const { user } = useGlobalContext();
   const [userSearch, setUserSearch] = useState('');
   const [userSearchResults, setUserSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState('');
+
+  //STATES FOR THE CHAT FUNCTIONALITY
+  const [room, setRoom] = useState('');
+  const [username, setUsername] = useState('');
+
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     setUserSearch(event.target.value);
@@ -85,6 +90,11 @@ const Messaging = () => {
             {userSearchResults.map((result) => {
               return (
                 <div
+                  onClick={() => {
+                    setRoom(user.toLowerCase() + result.username.toLowerCase());
+                    joinRoom(room, result.username);
+                    navigate(`/messaging/${room}`);
+                  }}
                   key={result._id}
                   className="border-2 border-gray-200 flex items-center gap-2 p-2 rounded-lg shadow"
                 >

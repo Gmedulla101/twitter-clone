@@ -10,6 +10,7 @@ import EditProfile from './pages/EditProfile';
 import Comment from './pages/Comment';
 import Messaging from './pages/Messaging';
 import ProfileInfo from './pages/ProfileInfo';
+import Chat from './pages/Chat';
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/comments" element={<Comment />} />
         <Route path="/messaging" element={<Messaging />} />
         <Route path="/user-profile/:username" element={<ProfileInfo />} />
+        <Route path="/messaging/:room" element={<Chat />} />
       </Routes>
     </div>
   );

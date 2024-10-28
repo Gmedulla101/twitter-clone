@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 //IMPORTING RELEVANT COMPONENTS
 import SideBar from '../components/SideBar';
-import cover from '../images/default-image.png';
-import userPhoto from '../images/user.png';
 import LoaderComponent from '../components/LoaderComponent';
+import Tweet from '../components/Tweet';
 
 //IMPORTING ROUTING DEPENDENCIES
 import { Link, useNavigate } from 'react-router-dom';
@@ -18,12 +18,72 @@ import { useGlobalContext } from '../context';
 //MAIN COMPONENT BODY
 
 const Profile = () => {
-  const { isSignedIn, setIsSignedIn, user, setUser } = useGlobalContext();
+  const { user } = useGlobalContext();
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const [isEditingCoverPhoto, setIsEditingCoverPhoto] = useState(false);
+
+  //GETTING USER DATA
+  const [profileData, setProfileData] = useState();
+  const [userTweets, setUserTweets] = useState();
+  useEffect(() => {
+    {
+      const getUserData = async () => {
+        try {
+          setIsLoading(true);
+          const userData = await axios.get(
+            `http://localhost:5000/api/v1/users/getUser/${user}`
+          );
+
+          const storedToken = localStorage.getItem('userToken');
+          if (!storedToken) {
+            throw new Error('You must sign in to make a post!');
+          }
+
+          const token = JSON.parse(storedToken);
+
+          const tweetsData = await axios.get(
+            'https://twitter-backend-s1nc.onrender.com/api/v1/posts/get-user-posts',
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          setProfileData(userData.data.data[0]);
+          setUserTweets(tweetsData?.data.data);
+
+          setIsLoading(false);
+        } catch (error) {
+          console.log(error);
+          setIsLoading(false);
+        }
+      };
+
+      getUserData();
+    }
+  }, []);
+
+  const tweetsEl = userTweets?.map((tweet) => {
+    return (
+      <Tweet
+        poster={tweet.poster}
+        post={tweet.post}
+        key={tweet._id}
+        id={tweet._id}
+        docId={tweet.docId}
+        likes={tweet.likes}
+        comments={tweet.comments}
+        postImg={tweet.postImg}
+      />
+    );
+  });
+
+  console.log(profileData);
+  console.log(userTweets);
 
   const logOut = async () => {
     setIsLoading(true);
@@ -47,7 +107,9 @@ const Profile = () => {
   return (
     <section>
       {isLoading ? (
-        <LoaderComponent />
+        <div className="my-24">
+          <LoaderComponent />
+        </div>
       ) : (
         <>
           {' '}
@@ -64,7 +126,7 @@ const Profile = () => {
               </Link>
             </h1>
           ) : (
-            <section className="ml-12 bg-white md:ml-64">
+            <section className="ml-12 mb-12 bg-white md:ml-64">
               <section className=" h-full">
                 <span className="flex justify-between p-2">
                   <h1 className="text-2xl font-bold px-2 py-2"> Profile </h1>
@@ -81,11 +143,19 @@ const Profile = () => {
                   className="h-60 bg-slate-200 flex justify-center items-center gap-4 text-2xl font-bold relative"
                   onClick={editCoverPhoto}
                 >
-                  <img src={cover} alt="" className="w-[50%] h-full" />
+                  <img
+                    src={profileData?.coverImage}
+                    alt=""
+                    className="w-full h-full"
+                  />
                 </div>
 
                 <div className="bg-white border-4 border-blue-400 w-20 h-20 p-1 rounded-full relative top-[-40px] ml-6 overflow-hidden">
-                  <img src={userPhoto} alt="" className="rounded-full" />
+                  <img
+                    src={profileData?.profileImage}
+                    alt=""
+                    className="rounded-full"
+                  />
                 </div>
                 {isEditingCoverPhoto ? (
                   <span
@@ -101,10 +171,19 @@ const Profile = () => {
 
               <section className="ml-3">
                 <h4 className="font-bold text-2xl ">
-                  {user?.firstName} {user?.lastName} {user?.otherNames}
+                  {profileData?.firstName} {profileData?.lastName}{' '}
+                  {profileData?.otherNames}
                 </h4>
-                <p className="text-slate-500"> @{user?.username} </p>
-                <p className="mt-2"> {user?.bio} </p>
+                <p className="text-slate-500"> @{profileData?.username} </p>
+                <p className="mt-2"> {profileData?.bio} </p>
+                <div className="flex gap-2">
+                  <p className="font-semibold">
+                    {profileData?.followers.length} followers
+                  </p>
+                  <p className="font-semibold">
+                    {profileData?.following.length} following
+                  </p>
+                </div>
               </section>
               <Link to={'/edit-profile'}>
                 <button
@@ -114,6 +193,14 @@ const Profile = () => {
                   Edit profile
                 </button>
               </Link>
+
+              <section className="mt-10">
+                <h1 className="text-xl text-center font-bold mb-3 text-blue-500">
+                  {' '}
+                  Your Tweets{' '}
+                </h1>
+                <div>{tweetsEl}</div>
+              </section>
             </section>
           )}
         </>
