@@ -96,7 +96,7 @@ const Messaging = () => {
                     navigate(`/messaging/${room}`);
                   }}
                   key={result._id}
-                  className="border-2 border-gray-200 flex items-center gap-2 p-2 rounded-lg shadow"
+                  className="border-2 border-gray-200 flex items-center gap-2 p-2 rounded-lg shadow cursor-pointer"
                 >
                   <span className="h-16 w-16 border-2 border-gray-400 p-2 rounded-full flex justify-center items-center">
                     Image
