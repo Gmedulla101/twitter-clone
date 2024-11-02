@@ -17,10 +17,10 @@ const ProfileInfo = () => {
     const getUser = async () => {
       try {
         const data = await axios.get(
-          `http://localhost:5000/api/v1/users/getUser/${username}`
+          `https://twitter-backend-s1nc.onrender.com/api/v1/users/getUser/${username}`
         );
         const userTweetData = await axios.get(
-          `http://localhost:5000/api/v1/posts/get-posts?poster=${username}`
+          `https://twitter-backend-s1nc.onrender.com/api/v1/posts/get-posts?poster=${username}`
         );
 
         setUserTweets(userTweetData.data.data);
@@ -58,7 +58,7 @@ const ProfileInfo = () => {
 
       const token = JSON.parse(storedToken);
       await axios.patch(
-        `http://localhost:5000/api/v1/users/followUser/${username}`,
+        `https://twitter-backend-s1nc.onrender.com/api/v1/users/followUser/${username}`,
         {},
         {
           headers: {
