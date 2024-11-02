@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 //IMPORTING HELPER COMPONENTS
 import SideBar from '../components/SideBar';
+import Tweet from '../components/Tweet';
 
 //IMPORTING DEPS
 import axios from 'axios';
@@ -10,6 +11,7 @@ import { useParams } from 'react-router-dom';
 const ProfileInfo = () => {
   const { username } = useParams();
   const [userData, setUserData] = useState();
+  const [userTweets, setUserTweets] = useState([]);
 
   useEffect(() => {
     const getUser = async () => {
@@ -17,11 +19,11 @@ const ProfileInfo = () => {
         const data = await axios.get(
           `http://localhost:5000/api/v1/users/getUser/${username}`
         );
-        const userTweets = await axios.get(
-          `http://localhost:5000/api/v1/posts/get-posts`
+        const userTweetData = await axios.get(
+          `http://localhost:5000/api/v1/posts/get-posts?poster=${username}`
         );
 
-        console.log(userTweets);
+        setUserTweets(userTweetData.data.data);
 
         setUserData(data.data.data[0]);
       } catch (error) {
@@ -31,6 +33,21 @@ const ProfileInfo = () => {
 
     getUser();
   }, []);
+
+  const tweetsEl = userTweets?.map((tweet) => {
+    return (
+      <Tweet
+        poster={tweet.poster}
+        post={tweet.post}
+        key={tweet._id}
+        id={tweet._id}
+        docId={tweet.docId}
+        likes={tweet.likes}
+        comments={tweet.comments}
+        postImg={tweet.postImg}
+      />
+    );
+  });
 
   const followUser = async () => {
     try {
@@ -97,13 +114,13 @@ const ProfileInfo = () => {
           </div>
         </section>
 
-        {/*     <section className="mt-10">
+        <section className="mt-10">
           <h1 className="text-xl text-center font-bold mb-3 text-blue-500">
             {' '}
             Your Tweets{' '}
           </h1>
           <div>{tweetsEl}</div>
-        </section> */}
+        </section>
       </section>
     </>
   );
