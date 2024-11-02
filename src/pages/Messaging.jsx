@@ -93,7 +93,7 @@ const Messaging = () => {
                   onClick={() => {
                     setRoom(user.toLowerCase() + result.username.toLowerCase());
                     joinRoom(room, result.username);
-                    navigate(`/messaging/${room}`);
+                    navigate(`/messaging/${result.username}`);
                   }}
                   key={result._id}
                   className="border-2 border-gray-200 flex items-center gap-2 p-2 rounded-lg shadow cursor-pointer"

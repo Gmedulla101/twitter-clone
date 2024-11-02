@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 import SideBar from '../components/SideBar';
 import CIcon from '@coreui/icons-react';
@@ -13,6 +15,32 @@ import { useGlobalContext } from '../context';
 const Chat = () => {
   const { user } = useGlobalContext();
   const [message, setMessage] = useState('');
+  const storedToken = localStorage.getItem('userToken');
+  if (!storedToken) {
+    throw new Error('You must sign in to make a post!');
+  }
+
+  const token = JSON.parse(storedToken);
+
+  const params = useParams();
+  console.log(params);
+
+  useEffect(() => {
+    const getAllMessages = async () => {
+      const data = await axios.get(
+        `http://localhost:5000/api/v1/messages/getMessages/${params.room}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const allMessages = data.data.data.messages;
+      console.log(allMessages);
+    };
+
+    getAllMessages();
+  }, []);
 
   const handleChange = (e) => {
     setMessage(e.target.value);
@@ -23,7 +51,7 @@ const Chat = () => {
       throw new Error('Message string cannot be empty');
     }
 
-    const messageObj = {
+    /*  const messageObj = {
       room: selectedRoom,
       author: user,
       message: message,
@@ -33,14 +61,26 @@ const Chat = () => {
         new Date(Date.now()).getMinutes(),
     };
 
-    await socket.emit('send_message', messageObj);
+    await socket.emit('send_message', messageObj); */
+
+    const data = await axios.post(
+      `http://localhost:5000/api/v1/messages/send/${params.room}`,
+      {
+        message,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
   };
 
-  useEffect(() => {
+  /*  useEffect(() => {
     socket.on('receive_message', (data) => {
       console.log(data);
     });
-  }, [socket]);
+  }, [socket]); */
 
   return (
     <>
