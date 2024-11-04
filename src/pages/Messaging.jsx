@@ -40,7 +40,7 @@ const Messaging = () => {
 
         setIsLoading(true);
         const data = await axios.get(
-          `https://twitter-backend-s1nc.onrender.com/api/v1/users/getUsers?user=${userSearch}`
+          `http://localhost:5000/api/v1/users/getUsers?user=${userSearch}`
         );
 
         setUserSearchResults(data.data.data);

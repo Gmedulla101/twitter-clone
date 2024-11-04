@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
@@ -23,7 +23,6 @@ const Chat = () => {
   const token = JSON.parse(storedToken);
 
   const params = useParams();
-  console.log(params);
 
   useEffect(() => {
     const getAllMessages = async () => {
@@ -46,7 +45,9 @@ const Chat = () => {
     setMessage(e.target.value);
   };
 
-  const sendMessage = async () => {
+  //SEND MESSAGE FUNCTIONALITY
+  const chatinputRef = useRef(null);
+  const sendMessage = async (e) => {
     if (!message) {
       throw new Error('Message string cannot be empty');
     }
@@ -74,6 +75,8 @@ const Chat = () => {
         },
       }
     );
+
+    chatinputRef.current.value = '';
   };
 
   /*  useEffect(() => {
@@ -107,6 +110,8 @@ const Chat = () => {
                 sendMessage();
               }
             }}
+            id="chatInput"
+            ref={chatinputRef}
             className="border-2 border-slate-200 py-2 px-4 outline-none rounded-lg w-full focus:border-blue-500"
           />
           <button
