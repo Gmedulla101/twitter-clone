@@ -58,7 +58,7 @@ const ProfileInfo = () => {
 
       const token = JSON.parse(storedToken);
       await axios.patch(
-        `https://twitter-backend-s1nc.onrender.com/api/v1/users/followUser/${username}`,
+        `http://localhost:5000/api/v1/users/followUser/${username}`,
         {},
         {
           headers: {
@@ -68,7 +68,7 @@ const ProfileInfo = () => {
       );
       console.log('Followed');
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data.msg);
     }
   };
 
@@ -105,12 +105,23 @@ const ProfileInfo = () => {
           </div>
 
           <div>
-            <button
-              onClick={followUser}
-              className="py-2 px-10 bg-blue-500 rounded-full text-white font-semibold "
-            >
-              Follow
-            </button>
+            {userData?.followers.includes(
+              JSON.parse(localStorage.getItem('userId'))
+            ) ? (
+              <button
+                onClick={followUser}
+                className="py-2 px-8 bg-blue-500 rounded-full text-white font-semibold "
+              >
+                unfollow
+              </button>
+            ) : (
+              <button
+                onClick={followUser}
+                className="py-2 px-10 bg-blue-500 rounded-full text-white font-semibold "
+              >
+                Follow
+              </button>
+            )}
           </div>
         </section>
 

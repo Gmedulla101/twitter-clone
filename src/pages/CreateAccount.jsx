@@ -55,6 +55,7 @@ const CreateAccount = () => {
       setIsSignedIn(true);
       localStorage.setItem('userToken', JSON.stringify(data.data.token));
       localStorage.setItem('username', JSON.stringify(data.data.username));
+      localStorage.setItem('userId', JSON.stringify(data.data.id));
       navigate('/');
     } catch (err) {
       console.log(err);

@@ -1,4 +1,4 @@
-import io from 'socket.io-client';
+/* import io from 'socket.io-client';
 //INSTANTIATIING SOCKET CONNECTION
 const socket = io.connect('http://localhost:5000');
 
@@ -16,3 +16,4 @@ const joinRoom = (room, username) => {
 };
 
 export { socket, joinRoom, selectedRoom, selectedUsername };
+ */

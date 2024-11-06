@@ -5,11 +5,11 @@ import { useParams } from 'react-router-dom';
 import SideBar from '../components/SideBar';
 import CIcon from '@coreui/icons-react';
 import { cilSend } from '@coreui/icons';
-import {
+/* import {
   socket,
   selectedUsername,
   selectedRoom,
-} from '../custom hooks/useSocket';
+} from '../custom hooks/useSocket'; */
 import { useGlobalContext } from '../context';
 
 const Chat = () => {
@@ -88,10 +88,11 @@ const Chat = () => {
   return (
     <>
       <SideBar />
-      <section className="ml-12 flex flex-col relative">
+      <section className="ml-12 flex flex-col relative md:ml-64">
         <div className="shadow p-2 w-full">
           <h1 className="font-semibold text-2xl">
-            {selectedUsername || 'Live Chat'}
+           {/*  {selectedUsername || 'Live Chat'} */}
+           Live Chat
           </h1>
         </div>
         <div className="w-full h-[85vh]">
@@ -129,3 +130,7 @@ const Chat = () => {
 };
 
 export default Chat;
+
+const Message = () => {
+
+}
