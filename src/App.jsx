@@ -1,13 +1,16 @@
 import { Route, Routes } from 'react-router-dom';
 
 //IMPORTING APP ROUTES
-import Home from './components/Home';
+import Home from './pages/Home';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
-import CreateAccount from './components/CreateAccount';
-import Profile from './components/Profile';
-import EditProfile from './components/EditProfile';
-import Comment from './components/Comment';
+import CreateAccount from './pages/CreateAccount';
+import Profile from './pages/Profile';
+import EditProfile from './pages/EditProfile';
+import Comment from './pages/Comment';
+import Messaging from './pages/Messaging';
+import ProfileInfo from './pages/ProfileInfo';
+import Chat from './pages/Chat';
 
 const App = () => {
   return (
@@ -20,6 +23,9 @@ const App = () => {
         <Route path="/user-profile" element={<Profile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/comments" element={<Comment />} />
+        <Route path="/messaging" element={<Messaging />} />
+        <Route path="/user-profile/:username" element={<ProfileInfo />} />
+        <Route path="/messaging/:room" element={<Chat />} />
       </Routes>
     </div>
   );

@@ -43,40 +43,44 @@ export default function SideBar() {
       <div
         className={`${
           isOpen ? 'flex' : 'hidden'
-        } flex-col gap-12 mt-12 p-5 md:flex`}
+        } flex-col gap-8 mt-12 p-5 md:flex`}
       >
         <Link to={'/'} className="flex items-center">
           <img
             src={homeBtn}
             alt=""
-            className="w-12 cursor-pointer p-2 rounded-full hover:bg-blue-500"
+            className="w-10 cursor-pointer p-2 rounded-full hover:bg-blue-500"
           />
-          <p className="font-bold text-2xl"> Home </p>
+          <p className="font-bold text-xl"> Home </p>
         </Link>{' '}
         {/*     <img
           src={searchBtn}
           alt=""
           className="w-12 cursor-pointer p-1 rounded-full hover:bg-blue-500"
         /> */}
-        {/*   <img
-          src={notiBtn}
-          alt=""
-          className="w-12 cursor-pointer p-2 rounded-full hover:bg-blue-500"
-        />  */}
+        <Link to={'/messaging'} className="flex items-center">
+          <img
+            src={notiBtn}
+            alt=""
+            className="w-10 cursor-pointer p-2 rounded-full hover:bg-blue-500"
+          />
+          <p className="font-bold text-xl">Messaging</p>
+        </Link>
         <Link to={'/user-profile'} className="flex items-center">
           <img
             src={profileBtn}
             alt=""
-            className="w-12 cursor-pointer p-2 rounded-full hover:bg-blue-500"
+            className="w-10 cursor-pointer p-2 rounded-full hover:bg-blue-500"
           />
-          <p className="text-2xl font-bold">Profile</p>
+          <p className="text-xl font-bold">Profile</p>
         </Link>{' '}
-        <Link to={'/'} className="block mx-auto">
+        <Link to={'/'} className="flex items-center gap-1">
           <img
             src={newTweetBtn}
             alt=""
-            className="w-14 cursor-pointer p-2 rounded-full bg-blue-500 "
+            className="w-10 cursor-pointer p-2 rounded-full bg-blue-500 "
           />
+          <p className="font-bold text-xl">New post</p>
         </Link>
       </div>
     </aside>

@@ -1,5 +1,6 @@
 export const GET_TWEETS = 'GET_TWEETS';
 export const STOP_LOADING = 'STOP_LOADING';
+export const START_LOADING = 'START_LOADING';
 export const GET_USER_TWEETS = 'GET_USER_TWEETS';
 export const SET_ERROR_TRUE = 'SET_ERROR_TRUE';
 export const GET_TWEET_IMAGES = 'GET_TWEET_IMAGES';

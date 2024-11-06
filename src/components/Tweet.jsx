@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
+import { Link } from 'react-router-dom';
 
 //IMPORTING HELPER COMPONENTS
-import Comment from './Comment';
+import Comment from '../pages/Comment';
 import SignIn from './SignIn';
 
 //IMPORTING IMAGE ASSETS
@@ -17,24 +18,10 @@ import { useGlobalContext } from '../context';
 
 //MAIN COMPONENT BODY
 
-const Tweet = ({ poster, post, tweetImages, id, comments, likes, docId }) => {
+const Tweet = ({ poster, post, postImg, id, comments, likes }) => {
   const { user } = useGlobalContext();
 
   const [commentOpen, setCommentOpen] = useState(false);
-
-  //TWEET IMAGE LOGIC
-  const tweetImagesId = tweetImages?.map((tweetImage, i) => {
-    return {
-      imageUrl: tweetImage,
-      imageId: tweetImage.slice(
-        tweetImage.lastIndexOf('_') + 1,
-        tweetImage.lastIndexOf('?')
-      ),
-    };
-  });
-  const particularImage = tweetImagesId.filter((tweetImageId) => {
-    return tweetImageId.imageId === id;
-  });
 
   //TWEET COMMENT LOGIC
   const createComment = () => {
@@ -48,15 +35,15 @@ const Tweet = ({ poster, post, tweetImages, id, comments, likes, docId }) => {
 
   return (
     <article className="border-2 border-slate-200 p-3">
-      <h2 className="poster font-bold"> {poster} </h2>
+      <Link to={`/user-profile/${poster}`}>
+        {' '}
+        <h2 className="poster font-bold"> {poster} </h2>{' '}
+      </Link>
+
       <p className="mb-4">{post}</p>
-      {particularImage.length != 0 ? (
-        <div className="h-72 w-full rounded-xl overflow-hidden">
-          <img
-            src={particularImage[0]?.imageUrl}
-            alt=""
-            className="w-full h-full"
-          />
+      {postImg?.length > 0 ? (
+        <div className="h-96 w-full rounded-xl overflow-hidden md:h-96 md:w-[60%] md:mx-auto">
+          <img src={postImg[0]} alt="" className="w-full h-full" />
         </div>
       ) : (
         ''
@@ -82,7 +69,6 @@ const Tweet = ({ poster, post, tweetImages, id, comments, likes, docId }) => {
             <Comment
               comments={comments}
               setCommentOpen={setCommentOpen}
-              tweetId={docId}
               id={id}
             />,
             document.querySelector('#home')
