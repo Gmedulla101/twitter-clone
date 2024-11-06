@@ -34,7 +34,7 @@ const Profile = () => {
         try {
           setIsLoading(true);
           const userData = await axios.get(
-            `http://localhost:5000/api/v1/users/getUser/${user}`
+            `https://twitter-backend-s1nc.onrender.com/api/v1/users/getUser/${user}`
           );
 
           const storedToken = localStorage.getItem('userToken');
