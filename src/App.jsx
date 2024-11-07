@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
 //IMPORTING APP ROUTES
 import Home from './pages/Home';
@@ -22,11 +23,12 @@ const App = () => {
         <Route path="/create-account" element={<CreateAccount />} />
         <Route path="/user-profile" element={<Profile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
-        <Route path="/comments" element={<Comment />} />
+        <Route path="/comment/:id" element={<Comment />} />
         <Route path="/messaging" element={<Messaging />} />
         <Route path="/user-profile/:username" element={<ProfileInfo />} />
-        <Route path="/messaging/:room" element={<Chat />} />
+        <Route path="/messaging/:chatPartner" element={<Chat />} />
       </Routes>
+      <Toaster />
     </div>
   );
 };

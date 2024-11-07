@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import { createPortal } from 'react-dom';
-import { Link } from 'react-router-dom';
-
-//IMPORTING HELPER COMPONENTS
-import Comment from '../pages/Comment';
-import SignIn from './SignIn';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 //IMPORTING IMAGE ASSETS
 import commentBtn from '../images/chat.png';
@@ -12,6 +8,7 @@ import likeBtn from '../images/like.png';
 
 //IMPORTING HELPER MODULES
 import { useGlobalContext } from '../context';
+import toast from 'react-hot-toast';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,18 +16,33 @@ import { useGlobalContext } from '../context';
 //MAIN COMPONENT BODY
 
 const Tweet = ({ poster, post, postImg, id, comments, likes }) => {
-  const { user } = useGlobalContext();
-
-  const [commentOpen, setCommentOpen] = useState(false);
+  const { user, isSignedIn } = useGlobalContext();
+  const userId = JSON.parse(localStorage.getItem('userId'));
+  const navigate = useNavigate();
 
   //TWEET COMMENT LOGIC
   const createComment = () => {
     //ADDING EDGE CASES
     if (!user) {
-      alert('Please login or sign up to use core functionality');
+      alert('Please login or sign up to use our core functionality');
       return;
     }
-    setCommentOpen(true);
+    navigate(`/comment/${id}`);
+  };
+
+  const like = async () => {
+    try {
+      if (!isSignedIn) {
+        toast.error('You must be logged in to use core functionality');
+      }
+      const res = await axios.patch(
+        `http://localhost:5000/api/v1/posts/like/${id}?likedUser=${userId}`
+      );
+
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -57,22 +69,13 @@ const Tweet = ({ poster, post, postImg, id, comments, likes }) => {
           <p className="text-xl relative top-1">{comments?.length}</p>
         </button>
 
-        <button className="w-1/3 flex justify-center items-center gap-1 hover:bg-gray-200 active:bg-gray-300 rounded-full">
+        <button
+          onClick={like}
+          className="w-1/3 flex justify-center items-center gap-1 hover:bg-gray-200 active:bg-gray-300 rounded-full"
+        >
           <img src={likeBtn} alt="" className="w-8" />
           <p className="text-xl relative -top-[2px]">{likes}</p>
         </button>
-      </div>
-
-      <div>
-        {commentOpen &&
-          createPortal(
-            <Comment
-              comments={comments}
-              setCommentOpen={setCommentOpen}
-              id={id}
-            />,
-            document.querySelector('#home')
-          )}
       </div>
     </article>
   );

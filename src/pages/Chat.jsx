@@ -27,7 +27,7 @@ const Chat = () => {
   useEffect(() => {
     const getAllMessages = async () => {
       const data = await axios.get(
-        `http://localhost:5000/api/v1/messages/getMessages/${params.room}`,
+        `http://localhost:5000/api/v1/messages/getMessages/${params.chatPartner}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -65,7 +65,7 @@ const Chat = () => {
     await socket.emit('send_message', messageObj); */
 
     const data = await axios.post(
-      `http://localhost:5000/api/v1/messages/send/${params.room}`,
+      `http://localhost:5000/api/v1/messages/send/${params.chatPartner}`,
       {
         message,
       },
@@ -91,15 +91,40 @@ const Chat = () => {
       <section className="ml-12 flex flex-col relative md:ml-64">
         <div className="shadow p-2 w-full">
           <h1 className="font-semibold text-2xl">
-           {/*  {selectedUsername || 'Live Chat'} */}
-           Live Chat
+            {params.chatPartner || 'Live Chat'}
           </h1>
         </div>
-        <div className="w-full h-[85vh]">
+        {/*  <div className="w-full h-[85vh]">
           <h3 className="font-semibold text-3xl text-center my-[35vh]">
             All your chats will appear{' '}
             <span className="text-blue-500">here</span>
           </h3>
+        </div> */}
+
+        <div className="messageContainer h-[85vh] p-2 overflow-auto">
+          {/* USER/SENDER MESSAGE */}
+          <div className="user flex justify-end my-2">
+            <div className="user w-3/4 p-2 bg-blue-500 rounded-lg">
+              <h1 className="text-white w-full">
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Et hic
+                rem maxime non iure officiis vel id explicabo magni dolore!
+              </h1>
+              <p className="text-white text-xs text-right mt-2"> 1:17 PM </p>
+            </div>
+          </div>
+
+          {/* RECEIVER MESSAGE */}
+          <div className="receiver flex justify-start my-2">
+            <div className="user w-3/4 py-3 p-2 bg-slate-500 rounded-lg">
+              <h1 className="text-white">
+                {' '}
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores
+                natus corporis nobis, voluptate doloremque explicabo. Quisquam
+                iusto laborum neque nulla.{' '}
+              </h1>
+              <p className="text-white text-xs text-left mt-2"> 1:19 PM </p>
+            </div>
+          </div>
         </div>
         <div className="px-2 absolute w-full top-full flex gap-2">
           <input
@@ -131,6 +156,4 @@ const Chat = () => {
 
 export default Chat;
 
-const Message = () => {
-
-}
+const Message = () => {};

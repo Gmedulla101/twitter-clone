@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react';
+import toast from 'react-hot-toast';
 
 //IMPORTING ROUTING DEPENDENCIES
 import { useNavigate, Link } from 'react-router-dom';
@@ -168,14 +169,14 @@ const Home = () => {
   const createPost = async () => {
     //TACKLING EDGE CASES AND PROGRAMMATIC INCONSISTENCIES
     if (!user) {
-      dispatch({ type: SET_POST_ERROR_TRUE });
+      toast.error('Post cannot be made without signing in');
 
       return;
     } else {
       dispatch({ type: SET_POST_ERROR_FALSE });
     }
     if (textareaContent === '' && file === null) {
-      alert('Post field is empty, please type in a post');
+      toast.error('Post field is empty, please type in a post');
       return;
     }
 
@@ -212,8 +213,10 @@ const Home = () => {
         setFile(null);
         setImageDislay(null);
         dispatch({ type: STOP_LOADING });
+        toast.success('Post sent successfully!');
       } catch (error) {
         dispatch({ type: STOP_LOADING });
+        toast.error("Couldn't send post");
         console.log(error);
       }
     } else {

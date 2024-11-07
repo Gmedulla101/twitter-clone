@@ -89,6 +89,7 @@ const Profile = () => {
     setIsLoading(true);
     localStorage.removeItem('userToken');
     localStorage.removeItem('username');
+    localStorage.removeItem('userId');
     navigate('/');
   };
 
