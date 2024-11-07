@@ -83,7 +83,7 @@ const Comment = ({ comments, setCommentOpen, tweetId, id }) => {
         </button>
       </div>
       {/* TEXT AREA FOR ADDING A NEW COMMENT */}
-      <section className="mb-12 shadow border-2 border-red-400">
+      <section className="mb-12 shadow">
         <textarea
           value={commentText}
           onChange={handleChange}

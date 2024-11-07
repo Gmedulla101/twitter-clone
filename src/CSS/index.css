@@ -12,3 +12,18 @@
 .main-content-textarea::-webkit-scrollbar {
   display: none;
 }
+
+::-webkit-scrollbar {
+  cursor: pointer;
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  cursor: pointer;
+  background: rgb(220, 220, 220);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 5px;
+}

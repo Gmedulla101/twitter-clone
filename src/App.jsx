@@ -25,7 +25,7 @@ const App = () => {
         <Route path="/comments" element={<Comment />} />
         <Route path="/messaging" element={<Messaging />} />
         <Route path="/user-profile/:username" element={<ProfileInfo />} />
-        <Route path="/messaging/:room" element={<Chat />} />
+        <Route path="/messaging/:chatPartner" element={<Chat />} />
       </Routes>
     </div>
   );
