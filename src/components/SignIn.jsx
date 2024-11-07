@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useGlobalContext } from '../context';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 //IMPORTING RELEVANT COMPONENTS
 import Logo from './Logo';
@@ -41,6 +42,11 @@ const SignIn = () => {
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
+      const { email, password } = signInData;
+      if (email === '' || password === '') {
+        setIsLoading(false);
+        toast.error('Please enter complete sign in details');
+      }
       const data = await axios.post(
         'https://twitter-backend-s1nc.onrender.com/api/v1/auth/login',
         signInData
