@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react';
+import toast from 'react-hot-toast';
 
 //IMPORTING ROUTING DEPENDENCIES
 import { useNavigate, Link } from 'react-router-dom';
@@ -212,8 +213,10 @@ const Home = () => {
         setFile(null);
         setImageDislay(null);
         dispatch({ type: STOP_LOADING });
+        toast.success("Post sent successfully!")
       } catch (error) {
         dispatch({ type: STOP_LOADING });
+        toast.error("Couldn't send post")
         console.log(error);
       }
     } else {

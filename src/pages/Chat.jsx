@@ -102,10 +102,27 @@ const Chat = () => {
         </div> */}
 
         <div className="messageContainer h-[85vh] p-2 overflow-auto">
+          {/* USER/SENDER MESSAGE */}
           <div className="user flex justify-end my-2">
-            <div className="user w-fit py-3 px-4 bg-blue-500 rounded-lg">
-              <h1 className="text-white"> Hioooooooooooooooooooooooooooo </h1>
+            <div className="user w-3/4 p-2 bg-blue-500 rounded-lg">
+              <h1 className="text-white w-full">
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Et hic
+                rem maxime non iure officiis vel id explicabo magni dolore!
+              </h1>
               <p className="text-white text-xs text-right mt-2"> 1:17 PM </p>
+            </div>
+          </div>
+
+          {/* RECEIVER MESSAGE */}
+          <div className="receiver flex justify-start my-2">
+            <div className="user w-3/4 py-3 p-2 bg-slate-500 rounded-lg">
+              <h1 className="text-white">
+                {' '}
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores
+                natus corporis nobis, voluptate doloremque explicabo. Quisquam
+                iusto laborum neque nulla.{' '}
+              </h1>
+              <p className="text-white text-xs text-left mt-2"> 1:19 PM </p>
             </div>
           </div>
         </div>

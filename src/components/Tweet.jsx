@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { createPortal } from 'react-dom';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 //IMPORTING HELPER COMPONENTS
 import Comment from '../pages/Comment';
@@ -20,8 +19,7 @@ import { useGlobalContext } from '../context';
 
 const Tweet = ({ poster, post, postImg, id, comments, likes }) => {
   const { user } = useGlobalContext();
-
-  const [commentOpen, setCommentOpen] = useState(false);
+  const navigate = useNavigate();
 
   //TWEET COMMENT LOGIC
   const createComment = () => {
@@ -30,7 +28,7 @@ const Tweet = ({ poster, post, postImg, id, comments, likes }) => {
       alert('Please login or sign up to use core functionality');
       return;
     }
-    setCommentOpen(true);
+    navigate(`/comment/${id}`);
   };
 
   return (
@@ -61,18 +59,6 @@ const Tweet = ({ poster, post, postImg, id, comments, likes }) => {
           <img src={likeBtn} alt="" className="w-8" />
           <p className="text-xl relative -top-[2px]">{likes}</p>
         </button>
-      </div>
-
-      <div>
-        {commentOpen &&
-          createPortal(
-            <Comment
-              comments={comments}
-              setCommentOpen={setCommentOpen}
-              id={id}
-            />,
-            document.querySelector('#home')
-          )}
       </div>
     </article>
   );
