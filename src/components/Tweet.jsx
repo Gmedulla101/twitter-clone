@@ -42,6 +42,7 @@ const Tweet = ({ poster, post, postImg, id, comments, likes }) => {
       window.location.reload();
     } catch (error) {
       console.log(error);
+      toast.error(error.response.data.msg);
     }
   };
 
