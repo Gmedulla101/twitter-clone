@@ -11,7 +11,7 @@ import SideBar from '../components/SideBar';
 import LoaderComponent from '../components/LoaderComponent';
 
 //IMPORTING CONTEXT HOOK
-import { useGlobalContext } from '../context';
+import { useGlobalContext } from '../context/context';
 
 const Messaging = () => {
   const { user } = useGlobalContext();

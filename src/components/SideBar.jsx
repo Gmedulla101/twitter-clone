@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 //IMPORTING GLOBAL CONTEXT
-import { useGlobalContext } from '../context';
+import { useGlobalContext } from '../context/context';
 
 //IMPORTING ASSETS
 import Logo from './Logo';

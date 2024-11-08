@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { useGlobalContext } from '../context';
+import { useGlobalContext } from '../context/context';
 import SideBar from '../components/SideBar';
 import toast from 'react-hot-toast';
 import { useParams, Link } from 'react-router-dom';

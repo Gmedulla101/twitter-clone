@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 import SideBar from '../components/SideBar';
 import CIcon from '@coreui/icons-react';
@@ -10,7 +11,7 @@ import { cilSend } from '@coreui/icons';
   selectedUsername,
   selectedRoom,
 } from '../custom hooks/useSocket'; */
-import { useGlobalContext } from '../context';
+import { useGlobalContext } from '../context/context';
 
 const Chat = () => {
   const { user } = useGlobalContext();
@@ -24,6 +25,8 @@ const Chat = () => {
   const token = JSON.parse(storedToken);
 
   const params = useParams();
+
+  const lastMessageRef = useRef();
 
   useEffect(() => {
     const getAllMessages = async () => {
@@ -43,12 +46,26 @@ const Chat = () => {
     getAllMessages();
   }, []);
 
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  });
+
   const conversationEl = conversation.map((convo) => {
     if (convo.senderUsername === user) {
       return (
-        <div className="user flex justify-end my-2">
-          <div className="user w-3/4 p-2 bg-blue-500 rounded-lg">
-            <h1 className="text-white w-full">{convo.message}</h1>
+        <div
+          ref={lastMessageRef}
+          key={convo._id}
+          className="user flex justify-end my-2"
+        >
+          <div className="user w-fit p-2 bg-blue-500 rounded-lg">
+            <h1 className="text-white max-w-64">{convo.message}</h1>
             <p className="text-white text-xs text-right mt-2">
               {' '}
               {`${convo.createdAt.split('T')[1].split('.')[0].split(':')[0]}:${
@@ -60,9 +77,13 @@ const Chat = () => {
       );
     } else {
       return (
-        <div className="receiver flex justify-start my-2">
-          <div className="user w-3/4 py-3 p-2 bg-slate-500 rounded-lg">
-            <h1 className="text-white">{convo.message}</h1>
+        <div
+          ref={lastMessageRef}
+          key={convo._id}
+          className="receiver flex justify-start my-2"
+        >
+          <div className="user w-fit p-2 bg-slate-500 rounded-lg">
+            <h1 className="text-white max-w-64">{convo.message}</h1>
             <p className="text-white text-xs text-left mt-2">
               {' '}
               {`${convo.createdAt.split('T')[1].split('.')[0].split(':')[0]}:${
@@ -82,7 +103,8 @@ const Chat = () => {
   const chatinputRef = useRef(null);
   const sendMessage = async (e) => {
     if (!message) {
-      throw new Error('Message string cannot be empty');
+      toast.error('You cannot send an empty message na');
+      return;
     }
 
     /*  const messageObj = {
@@ -110,6 +132,7 @@ const Chat = () => {
     );
 
     chatinputRef.current.value = '';
+    window.location.reload();
   };
 
   /*  useEffect(() => {
@@ -127,16 +150,20 @@ const Chat = () => {
             {params.chatPartner || 'Live Chat'}
           </h1>
         </div>
-        {/*  <div className="w-full h-[85vh]">
-          <h3 className="font-semibold text-3xl text-center my-[35vh]">
-            All your chats will appear{' '}
-            <span className="text-blue-500">here</span>
-          </h3>
-        </div> */}
 
-        <div className="messageContainer h-[85vh] p-2 overflow-auto">
-          {conversationEl}
-        </div>
+        {conversation.length < 1 ? (
+          <div className="w-full h-[85vh]">
+            <h3 className="font-semibold text-3xl text-center my-[35vh]">
+              All your chats will appear{' '}
+              <span className="text-blue-500">here</span>
+            </h3>
+          </div>
+        ) : (
+          <div className="messageContainer h-[85vh] p-2 overflow-auto">
+            {conversationEl}
+          </div>
+        )}
+
         <div className="px-2 absolute w-full top-full flex gap-2">
           <input
             type="text"

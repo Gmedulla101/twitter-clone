@@ -13,7 +13,7 @@ import SignInbar from '../components/SignInbar';
 import LoaderComponent from '../components/LoaderComponent';
 
 //IMPORTING CUSTOM HOOKS
-import { useGlobalContext } from '../context';
+import { useGlobalContext } from '../context/context';
 
 //IMPORTING FIREBASE DEPENDENCIES
 import { storage } from '../config/firebase';

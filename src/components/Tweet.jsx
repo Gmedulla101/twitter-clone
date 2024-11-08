@@ -7,7 +7,7 @@ import commentBtn from '../images/chat.png';
 import likeBtn from '../images/like.png';
 
 //IMPORTING HELPER MODULES
-import { useGlobalContext } from '../context';
+import { useGlobalContext } from '../context/context';
 import toast from 'react-hot-toast';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
