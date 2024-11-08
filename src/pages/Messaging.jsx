@@ -104,7 +104,7 @@ const Messaging = () => {
                 <div
                   onClick={() => {
                     setRoom(user.toLowerCase() + result.username.toLowerCase());
-                    joinRoom(room, result.username);
+                    /* joinRoom(room, result.username); */
                     navigate(`/messaging/${result.username}`);
                   }}
                   key={result._id}
