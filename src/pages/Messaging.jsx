@@ -14,7 +14,7 @@ import LoaderComponent from '../components/LoaderComponent';
 import { useGlobalContext } from '../context/context';
 
 const Messaging = () => {
-  const { user } = useGlobalContext();
+  const { user, userToken } = useGlobalContext();
   const [userSearch, setUserSearch] = useState('');
   const [userSearchResults, setUserSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +22,6 @@ const Messaging = () => {
 
   //STATES FOR THE CHAT FUNCTIONALITY
   const [room, setRoom] = useState('');
-  const [username, setUsername] = useState('');
 
   const navigate = useNavigate();
 
@@ -38,19 +37,12 @@ const Messaging = () => {
           return;
         }
 
-        const storedToken = localStorage.getItem('userToken');
-        if (!storedToken) {
-          throw new Error('You must sign in to make a post!');
-        }
-
-        const token = JSON.parse(storedToken);
-
         setIsLoading(true);
         const data = await axios.get(
           `http://localhost:5000/api/v1/users/getUsers?user=${userSearch}`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${userToken}`,
             },
           }
         );

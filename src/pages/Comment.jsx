@@ -18,12 +18,7 @@ const Comment = () => {
     setCommentText(event.target.value);
   };
   const { id } = useParams();
-  const { user } = useGlobalContext();
-  const storedToken = localStorage.getItem('userToken');
-  if (!storedToken) {
-    throw new Error('You must sign in to make a post!');
-  }
-  const token = JSON.parse(storedToken);
+  const { user, userToken } = useGlobalContext();
 
   useEffect(() => {
     const getPost = async () => {
@@ -53,7 +48,7 @@ const Comment = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${userToken}`,
           },
         }
       );

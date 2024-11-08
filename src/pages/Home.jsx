@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import toast from 'react-hot-toast';
 
-//IMPORTING ROUTING DEPENDENCIES
-import { useNavigate, Link } from 'react-router-dom';
-
 //IMPORTING RELEVANT COMPONENTS
 import Tweet from '../components/Tweet';
 import SideBar from '../components/SideBar';
@@ -18,7 +15,7 @@ import { useGlobalContext } from '../context/context';
 //IMPORTING FIREBASE DEPENDENCIES
 import { storage } from '../config/firebase';
 
-import { ref, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
 
 //IMPORTING REDUCER ACTIONS
@@ -56,24 +53,12 @@ import axios from 'axios';
 const Home = () => {
   //ENSURING THAT THE LOG IN STATUS IS REGISTERED BY THE APP.
   useEffect(() => {
-    const userToken = JSON.parse(localStorage.getItem('userToken'));
-    const username = JSON.parse(localStorage.getItem('username'));
-    if (userToken) {
-      setIsSignedIn(true);
-    } else {
-      setIsSignedIn(false);
-    }
-    if (username) {
-      setUser(username);
-    } else {
-      setUser('');
-    }
     getTweets();
     getUserTweets();
   }, []);
 
   //GLOBAL CONTEXT VARIABLES
-  const { isSignedIn, setIsSignedIn, user, setUser } = useGlobalContext();
+  const { user, userToken } = useGlobalContext();
 
   //USEREDUCER HOOK UTILISATION
   const [reducerState, dispatch] = useReducer(reducer, defaultState);
@@ -99,18 +84,11 @@ const Home = () => {
   //FUNCTIONALTY FOR GETTING THE USER TWEETS FROM THE BACKEND
   const getUserTweets = async () => {
     try {
-      const storedToken = localStorage.getItem('userToken');
-      if (!storedToken) {
-        throw new Error('You must sign in to make a post!');
-      }
-
-      const token = JSON.parse(storedToken);
-
       const data = await axios.get(
         'https://twitter-backend-s1nc.onrender.com/api/v1/posts/get-user-posts',
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${userToken}`,
           },
         }
       );
@@ -194,19 +172,12 @@ const Home = () => {
           comments: [],
         };
 
-        const storedToken = localStorage.getItem('userToken');
-        if (!storedToken) {
-          throw new Error('You must sign in to make a post!');
-        }
-
-        const token = JSON.parse(storedToken);
-
-        const data = axios.post(
+        await axios.post(
           'https://twitter-backend-s1nc.onrender.com/api/v1/posts/create-post',
           postObject,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${userToken}`,
             },
           }
         );
@@ -229,19 +200,12 @@ const Home = () => {
           comments: [],
         };
 
-        const storedToken = localStorage.getItem('userToken');
-        if (!storedToken) {
-          throw new Error('You must sign in to make a post!');
-        }
-
-        const token = JSON.parse(storedToken);
-
-        const data = await axios.post(
+        await axios.post(
           'https://twitter-backend-s1nc.onrender.com/api/v1/posts/create-post',
           postObject,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${userToken}`,
             },
           }
         );

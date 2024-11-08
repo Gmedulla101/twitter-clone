@@ -9,11 +9,14 @@ import LoaderComponent from '../components/LoaderComponent';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
+import { useGlobalContext } from '../context/context';
+
 const ProfileInfo = () => {
   const { username } = useParams();
   const [userData, setUserData] = useState();
   const [userTweets, setUserTweets] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const { userToken } = useGlobalContext();
 
   useEffect(() => {
     const getUser = async () => {
@@ -56,18 +59,12 @@ const ProfileInfo = () => {
 
   const followUser = async () => {
     try {
-      const storedToken = localStorage.getItem('userToken');
-      if (!storedToken) {
-        throw new Error('You must sign in to make a post!');
-      }
-
-      const token = JSON.parse(storedToken);
       await axios.patch(
         `https://twitter-backend-s1nc.onrender.com/api/v1/users/followUser/${username}`,
         {},
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${userToken}`,
           },
         }
       );
@@ -80,18 +77,12 @@ const ProfileInfo = () => {
 
   const unfollowUser = async () => {
     try {
-      const storedToken = localStorage.getItem('userToken');
-      if (!storedToken) {
-        throw new Error('You must sign in to make a post!');
-      }
-
-      const token = JSON.parse(storedToken);
       await axios.patch(
         `http://localhost:5000/api/v1/users/unfollowUser/${username}`,
         {},
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${userToken}`,
           },
         }
       );

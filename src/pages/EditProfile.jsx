@@ -21,7 +21,8 @@ import { useGlobalContext } from '../context/context';
 //MAIN COMPONENT BODY
 
 const EditProfile = () => {
-  const { user, isSignedIn, setUser, setIsSignedIn } = useGlobalContext();
+  const { user, isSignedIn, setUser, setIsSignedIn, userToken } =
+    useGlobalContext();
 
   //IMAGE FUNCTIONALITY
 

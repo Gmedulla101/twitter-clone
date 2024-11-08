@@ -14,15 +14,9 @@ import { cilSend } from '@coreui/icons';
 import { useGlobalContext } from '../context/context';
 
 const Chat = () => {
-  const { user } = useGlobalContext();
+  const { user, userToken } = useGlobalContext();
   const [message, setMessage] = useState('');
   const [conversation, setConversation] = useState([]);
-  const storedToken = localStorage.getItem('userToken');
-  if (!storedToken) {
-    throw new Error('You must sign in to make a post!');
-  }
-
-  const token = JSON.parse(storedToken);
 
   const params = useParams();
 
@@ -34,7 +28,7 @@ const Chat = () => {
         `http://localhost:5000/api/v1/messages/getMessages/${params.chatPartner}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${userToken}`,
           },
         }
       );
