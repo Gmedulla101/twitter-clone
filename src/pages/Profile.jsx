@@ -10,7 +10,7 @@ import Tweet from '../components/Tweet';
 import { Link, useNavigate } from 'react-router-dom';
 
 //IMPORTING GLOBAL CONTEXT
-import { useGlobalContext } from '../context';
+import { useGlobalContext } from '../context/context';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@ import { useGlobalContext } from '../context';
 //MAIN COMPONENT BODY
 
 const Profile = () => {
-  const { user } = useGlobalContext();
+  const { user, userToken } = useGlobalContext();
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -37,18 +37,11 @@ const Profile = () => {
             `https://twitter-backend-s1nc.onrender.com/api/v1/users/getUser/${user}`
           );
 
-          const storedToken = localStorage.getItem('userToken');
-          if (!storedToken) {
-            throw new Error('You must sign in to make a post!');
-          }
-
-          const token = JSON.parse(storedToken);
-
           const tweetsData = await axios.get(
             'https://twitter-backend-s1nc.onrender.com/api/v1/posts/get-user-posts',
             {
               headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${userToken}`,
               },
             }
           );

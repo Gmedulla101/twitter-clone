@@ -13,7 +13,7 @@ import { storage } from '../config/firebase';
 import { useNavigate } from 'react-router-dom';
 
 //IMPORTING GLOBAL CONTEXT
-import { useGlobalContext } from '../context';
+import { useGlobalContext } from '../context/context';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,8 @@ import { useGlobalContext } from '../context';
 //MAIN COMPONENT BODY
 
 const EditProfile = () => {
-  const { user, isSignedIn, setUser, setIsSignedIn } = useGlobalContext();
+  const { user, isSignedIn, setUser, setIsSignedIn, userToken } =
+    useGlobalContext();
 
   //IMAGE FUNCTIONALITY
 

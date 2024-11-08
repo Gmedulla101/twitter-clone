@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGlobalContext } from '../context';
+import { useGlobalContext } from '../context/context';
 
 //IMPORTING DEPS
 import axios from 'axios';

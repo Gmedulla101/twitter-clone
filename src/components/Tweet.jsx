@@ -7,7 +7,7 @@ import commentBtn from '../images/chat.png';
 import likeBtn from '../images/like.png';
 
 //IMPORTING HELPER MODULES
-import { useGlobalContext } from '../context';
+import { useGlobalContext } from '../context/context';
 import toast from 'react-hot-toast';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +42,7 @@ const Tweet = ({ poster, post, postImg, id, comments, likes }) => {
       window.location.reload();
     } catch (error) {
       console.log(error);
+      toast.error(error.response.data.msg);
     }
   };
 
