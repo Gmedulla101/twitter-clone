@@ -1,13 +1,17 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import io from 'socket.io-client';
 import { useGlobalContext } from './context';
+import toast from 'react-hot-toast';
 
-export const SocketContext = createContext();
+const SocketContext = createContext();
+
+export const useSocketContext = () => useContext(SocketContext);
 
 export const SocketContextProvider = ({ children }) => {
   const { user } = useGlobalContext();
   const [socketConnection, setSocketConnection] = useState();
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [newMessage, setNewMessage] = useState([]);
 
   useEffect(() => {
     if (!user) {
@@ -15,10 +19,33 @@ export const SocketContextProvider = ({ children }) => {
       return;
     }
 
-    const socket = io('http://localhost:5000');
+    const socket = io('http://localhost:5000', {
+      query: {
+        user,
+      },
+    });
     setSocketConnection(socket);
-    return () => socket.close();
-  }, []);
 
-  return <SocketContext.Provider value={{}}>{children}</SocketContext.Provider>;
+    socket.on('getOnlineUsers', (users) => {
+      setOnlineUsers(users);
+    });
+
+    socket.on('newMessage', (newMessage) => {
+      setNewMessage((prevMessages) => {
+        return [...prevMessages, newMessage];
+      });
+    });
+
+    return () => {
+      socket.close();
+    };
+  }, [user, newMessage]);
+
+  return (
+    <SocketContext.Provider
+      value={{ onlineUsers, socketConnection, newMessage, setNewMessage }}
+    >
+      {children}
+    </SocketContext.Provider>
+  );
 };

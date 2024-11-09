@@ -12,9 +12,13 @@ import LoaderComponent from '../components/LoaderComponent';
 
 //IMPORTING CONTEXT HOOK
 import { useGlobalContext } from '../context/context';
+import { useSocketContext } from '../context/SocketContext';
 
 const Messaging = () => {
+  //EXTRACTING CONTEXT VALUES
   const { user, userToken } = useGlobalContext();
+  const { onlineUsers } = useSocketContext();
+
   const [userSearch, setUserSearch] = useState('');
   const [userSearchResults, setUserSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -102,9 +106,17 @@ const Messaging = () => {
                   key={result._id}
                   className="border-2 border-gray-200 flex items-center gap-2 p-2 rounded-lg shadow cursor-pointer"
                 >
-                  <span className="h-16 w-16 border-2 border-gray-400 p-2 rounded-full flex justify-center items-center">
-                    Image
-                  </span>
+                  <div className="relative">
+                    <span className="h-16 w-16 border-2 border-gray-400 p-2 rounded-full flex justify-center items-center">
+                      Image
+                    </span>
+
+                    {onlineUsers.includes(result.username) ? (
+                      <div className="w-4 h-4 bg-green-500 rounded-full absolute bottom-1 left-[50px]"></div>
+                    ) : (
+                      <div className="w-4 h-4 bg-slate-500 rounded-full absolute bottom-1 left-[50px]"></div>
+                    )}
+                  </div>
                   <h3 className="font-semibold ">{result.username}</h3>
                 </div>
               );
@@ -112,21 +124,6 @@ const Messaging = () => {
           </div>
         </section>
       )}
-
-      <div
-        onClick={() => {
-          setRoom(user.toLowerCase() + 'Kitana'.toLowerCase());
-          /* joinRoom(room, 'Kitana'); */
-          navigate(`/messaging/Kitana`);
-        }}
-        key="6728cd8cf9d1e9969bb88de1"
-        className="ml-12 md:ml-64 border-2 border-gray-200 flex items-center gap-2 p-2 rounded-lg shadow cursor-pointer"
-      >
-        <span className="h-16 w-16 border-2 border-gray-400 p-2 rounded-full flex justify-center items-center">
-          Image
-        </span>
-        <h3 className="font-semibold ">Kitana</h3>
-      </div>
     </>
   );
 };

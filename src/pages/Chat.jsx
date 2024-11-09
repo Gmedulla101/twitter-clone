@@ -11,10 +11,15 @@ import { cilSend } from '@coreui/icons';
   selectedUsername,
   selectedRoom,
 } from '../custom hooks/useSocket'; */
+
+//IMPORTING CONTEXTS
 import { useGlobalContext } from '../context/context';
+import { useSocketContext } from '../context/SocketContext';
 
 const Chat = () => {
   const { user, userToken } = useGlobalContext();
+  const { newMessage, setNewMessage } = useSocketContext();
+
   const [message, setMessage] = useState('');
   const [conversation, setConversation] = useState([]);
 
@@ -89,29 +94,58 @@ const Chat = () => {
       );
     }
   });
+
+  const newMessageEl = newMessage.map((message) => {
+    if (message.senderUsername === user) {
+      return (
+        <div
+          ref={lastMessageRef}
+          key={message._id}
+          className="user flex justify-end my-2"
+        >
+          <div className="user w-fit p-2 bg-blue-500 rounded-lg">
+            <h1 className="text-white max-w-64">{message.message}</h1>
+            <p className="text-white text-xs text-right mt-2">
+              {' '}
+              {`${
+                message.createdAt.split('T')[1].split('.')[0].split(':')[0]
+              }:${message.createdAt.split('T')[1].split('.')[0].split(':')[1]}`}
+            </p>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div
+          ref={lastMessageRef}
+          key={message._id}
+          className="receiver flex justify-start my-2"
+        >
+          <div className="user w-fit p-2 bg-slate-500 rounded-lg">
+            <h1 className="text-white max-w-64">{message.message}</h1>
+            <p className="text-white text-xs text-left mt-2">
+              {' '}
+              {`${
+                message.createdAt.split('T')[1].split('.')[0].split(':')[0]
+              }:${message.createdAt.split('T')[1].split('.')[0].split(':')[1]}`}
+            </p>
+          </div>
+        </div>
+      );
+    }
+  });
+
   const handleChange = (e) => {
     setMessage(e.target.value);
   };
 
   //SEND MESSAGE FUNCTIONALITY
-  const chatinputRef = useRef(null);
+
   const sendMessage = async (e) => {
     if (!message) {
       toast.error('You cannot send an empty message na');
       return;
     }
-
-    /*  const messageObj = {
-      room: selectedRoom,
-      author: user,
-      message: message,
-      time:
-        new Date(Date.now()).getHours() +
-        ':' +
-        new Date(Date.now()).getMinutes(),
-    };
-
-    await socket.emit('send_message', messageObj); */
 
     const data = await axios.post(
       `http://localhost:5000/api/v1/messages/send/${params.chatPartner}`,
@@ -120,20 +154,16 @@ const Chat = () => {
       },
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userToken}`,
         },
       }
     );
 
-    chatinputRef.current.value = '';
-    window.location.reload();
-  };
-
-  /*  useEffect(() => {
-    socket.on('receive_message', (data) => {
-      console.log(data);
+    setNewMessage((prevMsg) => {
+      return [...prevMsg, data.data.msg];
     });
-  }, [socket]); */
+    setMessage('');
+  };
 
   return (
     <>
@@ -155,6 +185,7 @@ const Chat = () => {
         ) : (
           <div className="messageContainer h-[85vh] p-2 overflow-auto">
             {conversationEl}
+            {newMessageEl}
           </div>
         )}
 
@@ -169,7 +200,7 @@ const Chat = () => {
               }
             }}
             id="chatInput"
-            ref={chatinputRef}
+            value={message}
             className="border-2 border-slate-200 py-2 px-4 outline-none rounded-lg w-full focus:border-blue-500"
           />
           <button
