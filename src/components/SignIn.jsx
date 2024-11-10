@@ -51,10 +51,12 @@ const SignIn = () => {
         'https://twitter-backend-s1nc.onrender.com/api/v1/auth/login',
         signInData
       );
-      setIsSignedIn(true);
+
       localStorage.setItem('userToken', JSON.stringify(data.data.token));
       localStorage.setItem('username', JSON.stringify(data.data.username));
       localStorage.setItem('userId', JSON.stringify(data.data.id));
+      setIsSignedIn(true);
+      setUser(data.data.username);
       navigate('/');
     } catch (error) {
       if (error.code === 'auth/invalid-credential') {
