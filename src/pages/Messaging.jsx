@@ -4,7 +4,6 @@ import axios from 'axios';
 /* import { joinRoom } from '../custom hooks/useSocket'; */
 
 import { Link, useNavigate } from 'react-router-dom';
-import { v4 } from 'uuid';
 
 //IMPORTING NEEDED DEPS
 import SideBar from '../components/SideBar';
@@ -22,10 +21,6 @@ const Messaging = () => {
   const [userSearch, setUserSearch] = useState('');
   const [userSearchResults, setUserSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState('');
-
-  //STATES FOR THE CHAT FUNCTIONALITY
-  const [room, setRoom] = useState('');
 
   const navigate = useNavigate();
 
@@ -43,7 +38,7 @@ const Messaging = () => {
 
         setIsLoading(true);
         const data = await axios.get(
-          `http://localhost:5000/api/v1/users/getUsers?user=${userSearch}`,
+          `https://twitter-backend-s1nc.onrender.com/api/v1/users/getUsers?user=${userSearch}`,
           {
             headers: {
               Authorization: `Bearer ${userToken}`,
@@ -99,8 +94,6 @@ const Messaging = () => {
               return (
                 <div
                   onClick={() => {
-                    setRoom(user.toLowerCase() + result.username.toLowerCase());
-                    /* joinRoom(room, result.username); */
                     navigate(`/messaging/${result.username}`);
                   }}
                   key={result._id}

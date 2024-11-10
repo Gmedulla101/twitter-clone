@@ -3,14 +3,11 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
+//IMPORTING RELEVANT COMPONENTS AND DEPS
+import LoaderComponent from '../components/LoaderComponent';
 import SideBar from '../components/SideBar';
 import CIcon from '@coreui/icons-react';
 import { cilSend } from '@coreui/icons';
-/* import {
-  socket,
-  selectedUsername,
-  selectedRoom,
-} from '../custom hooks/useSocket'; */
 
 //IMPORTING CONTEXTS
 import { useGlobalContext } from '../context/context';
@@ -22,6 +19,7 @@ const Chat = () => {
 
   const [message, setMessage] = useState('');
   const [conversation, setConversation] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const params = useParams();
 
@@ -29,19 +27,26 @@ const Chat = () => {
 
   useEffect(() => {
     const getAllMessages = async () => {
-      const data = await axios.get(
-        `http://localhost:5000/api/v1/messages/getMessages/${params.chatPartner}`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
-      const allMessages = data.data.data;
+      try {
+        setIsLoading(true);
+        const data = await axios.get(
+          `https://twitter-backend-s1nc.onrender.com/api/v1/messages/getMessages/${params.chatPartner}`,
+          {
+            headers: {
+              Authorization: `Bearer ${userToken}`,
+            },
+          }
+        );
+        const allMessages = data.data.data;
 
-      setConversation(allMessages);
+        setConversation(allMessages);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
     };
-
+    setNewMessage([]);
     getAllMessages();
   }, []);
 
@@ -148,7 +153,7 @@ const Chat = () => {
     }
 
     const data = await axios.post(
-      `http://localhost:5000/api/v1/messages/send/${params.chatPartner}`,
+      `https://twitter-backend-s1nc.onrender.com/api/v1/messages/send/${params.chatPartner}`,
       {
         message,
       },
@@ -175,18 +180,26 @@ const Chat = () => {
           </h1>
         </div>
 
-        {conversation.length < 1 ? (
-          <div className="w-full h-[85vh]">
-            <h3 className="font-semibold text-3xl text-center my-[35vh]">
-              All your chats will appear{' '}
-              <span className="text-blue-500">here</span>
-            </h3>
+        {isLoading ? (
+          <div className="h-[85vh]">
+            <LoaderComponent />
           </div>
         ) : (
-          <div className="messageContainer h-[85vh] p-2 overflow-auto">
-            {conversationEl}
-            {newMessageEl}
-          </div>
+          <section>
+            {conversation.length < 1 ? (
+              <div className="w-full h-[85vh]">
+                <h3 className="font-semibold text-3xl text-center my-[35vh]">
+                  All your chats will appear{' '}
+                  <span className="text-blue-500">here</span>
+                </h3>
+              </div>
+            ) : (
+              <div className="messageContainer h-[85vh] p-2 overflow-auto">
+                {conversationEl}
+                {newMessageEl}
+              </div>
+            )}
+          </section>
         )}
 
         <div className="px-2 absolute w-full top-full flex gap-2">
@@ -203,6 +216,7 @@ const Chat = () => {
             value={message}
             className="border-2 border-slate-200 py-2 px-4 outline-none rounded-lg w-full focus:border-blue-500"
           />
+
           <button
             type="submit"
             onClick={sendMessage}
@@ -218,5 +232,3 @@ const Chat = () => {
 };
 
 export default Chat;
-
-const Message = () => {};

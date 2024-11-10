@@ -19,7 +19,7 @@ export const SocketContextProvider = ({ children }) => {
       return;
     }
 
-    const socket = io('http://localhost:5000', {
+    const socket = io('https://twitter-backend-s1nc.onrender.com', {
       query: {
         user,
       },
