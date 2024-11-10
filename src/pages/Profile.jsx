@@ -18,7 +18,7 @@ import { useGlobalContext } from '../context/context';
 //MAIN COMPONENT BODY
 
 const Profile = () => {
-  const { user, userToken } = useGlobalContext();
+  const { user, userToken, setIsSignedIn, setUser } = useGlobalContext();
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -75,14 +75,13 @@ const Profile = () => {
     );
   });
 
-  console.log(profileData);
-  console.log(userTweets);
-
   const logOut = async () => {
     setIsLoading(true);
     localStorage.removeItem('userToken');
     localStorage.removeItem('username');
     localStorage.removeItem('userId');
+    setIsSignedIn(false);
+    setUser(null);
     navigate('/');
   };
 
